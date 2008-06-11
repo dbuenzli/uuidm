@@ -32,7 +32,7 @@ let sha_1 s =
     String.blit s 0 m 0 len;
     String.fill m len (mlen - len) '\x00';
     m.[len] <- '\x80';
-    if Sys.word_size = 64 then begin
+    if Sys.word_size > 32 then begin
       m.[mlen - 8] <- Char.unsafe_chr (blen lsr 56 land 0xFF);
       m.[mlen - 7] <- Char.unsafe_chr (blen lsr 48 land 0xFF);
       m.[mlen - 6] <- Char.unsafe_chr (blen lsr 40 land 0xFF);
