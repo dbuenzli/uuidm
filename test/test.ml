@@ -29,6 +29,6 @@ let main () =
 	    "0012416f-9eec-3ed4-a8b0-3bceecde1cd9");
   assert (id_eq (Uuidm.create (`V5 (Uuidm.ns_dns, "www.example.org")))
 	    "74738ff5-5367-5958-9aee-98fffdcd1876");
-  print_endline "Tests suceeded."
+  print_endline "Tests succeeded."
 
 let () = main ()

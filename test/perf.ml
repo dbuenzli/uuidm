@@ -12,7 +12,7 @@ let main () =
   let cstr = ref false in
   let options = [ 
     "-n", Arg.Set_int n,
-    "number of ids to generate";
+    "number of ids to generate.";
     "-str", Arg.Set cstr,
     "convert UUIDs to strings (defaults to false).";
     "-r", Arg.Unit (fun () -> v := `V4),
