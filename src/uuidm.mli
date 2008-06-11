@@ -1,7 +1,7 @@
 (*----------------------------------------------------------------------------
    Copyright (c) %%COPYRIGHTYEAR%%, Daniel C. Bünzli. All rights reserved.
    Distributed under a BSD license, see license at the end of the file.
-   Udata version %%VERSION%%
+   Uuidm version %%VERSION%%
   ----------------------------------------------------------------------------*)
 
 (** Universally unique identifiers.  
