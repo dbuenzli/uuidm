@@ -17,8 +17,8 @@ let rand =                                     (* 30 random bits generator. *)
   let s = Random.State.make_self_init () in 
   fun () -> Random.State.bits s                            
 
-(* md5 digest. Absurd, no Digest.to_bytes, sorry for the Obj. *)
-let md5 : string -> string = fun s -> Obj.magic (Digest.string s) 
+
+let md5 = Digest.string
 
 (* sha-1 digest. Based on pseudo-code of RFC 3174.
    Slow and ugly but does the job. *)
