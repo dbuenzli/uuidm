@@ -17,7 +17,6 @@ let rand =                                     (* 30 random bits generator. *)
   let s = Random.State.make_self_init () in 
   fun () -> Random.State.bits s                            
 
-
 let md5 = Digest.string
 
 (* sha-1 digest. Based on pseudo-code of RFC 3174.
