@@ -1,0 +1,5 @@
+version = "%%VERSION%%"
+description = "universally unique identifiers"
+archive(byte) = "uuidm.cmo"
+archive(native) = "uuidm.cmx"
+directory = "+uuidm"

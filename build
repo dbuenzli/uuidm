@@ -3,7 +3,7 @@ set -e
 
 # Project info
 PROJECTNAME="uuidm"
-VERSION="0.9.1"
+VERSION="0.9.2"
 COPYRIGHTYEAR="2008"
 EMAIL="daniel.buenzl i\\\@erratique.ch"
 
@@ -25,16 +25,25 @@ ocb () { $OCAMLBUILD $BUILDFLAGS $* ; }
 action () 
 {
   case $1 in
-    module) 
-      ocb $PROJECTNAME.cmx $PROJECTNAME.cmo ;;
+    module-byte) 
+      ocb $PROJECTNAME.cmo ;;
+    module-native) 
+      ocb $PROJECTNAME.cmx ;;
+    module)
+      action module-native
+      action module-byte ;;
     doc)
       ocb $PROJECTNAME.cmi
       $OCAMLDOC -html -I src -colorize-code -d $DOCDIR src/$PROJECTNAME.mli ;;
-    distrib) distrib ;;
+    install-byte)
+      action module-byte
+      $MKDIR -p $INSTALLDIR
+      $CP _build/src/*.{ml,mli,cmi,cmo} src/META $INSTALLDIR ;;
     install)
       action module
       $MKDIR -p $INSTALLDIR
-      $CP _build/src/*.{ml,mli,cmi,cmo,cmx,o} $INSTALLDIR ;;
+      $CP _build/src/*.{ml,mli,cmi,cmo,cmx,o} src/META $INSTALLDIR ;;
+    distrib) distrib ;;
     clean) 
       ocb -clean ;;
     clean-all) 
