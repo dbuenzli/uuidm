@@ -3,8 +3,9 @@ set -e
 
 # Project info
 PROJECTNAME="uuidm"
-VERSION="0.9.2"
+VERSION="0.9.3"
 COPYRIGHTYEAR="2008"
+SHORTDESCRIPTION="Universally unique identifiers (UUIDs) for OCaml"
 EMAIL="daniel.buenzl i\\\@erratique.ch"
 
 INSTALLDIR=${INSTALLDIR:="`ocamlc -where`/$PROJECTNAME"}
@@ -76,6 +77,7 @@ distrib ()
   for file in `$FIND $ROOTDIR -type f -print`; do
     sed -i "" "s/%%VERSION%%/$VERSION/; \
                s/%%COPYRIGHTYEAR%%/$COPYRIGHTYEAR/; \
+               s/%%SHORTDESCRIPTION%%/$SHORTDESCRIPTION/; \
                s/%%EMAIL%%/$EMAIL/;" \
 	$file
   done
