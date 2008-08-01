@@ -1,3 +1,8 @@
+# Version 0.9.3, 2008-08-01, Lausanne
+
+POSIX compliant build shell script.
+
+
 # Version 0.9.2, 2008-07-30, Lausanne 
 
 Support for debian packaging. Thanks to Sylvain Le Gall.
