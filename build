@@ -10,6 +10,7 @@ EMAIL="daniel.buenzl i\\\@erratique.ch"
 
 INSTALLDIR=${INSTALLDIR:="`ocamlc -where`/$PROJECTNAME"}
 DOCDIR=${DOCDIR:="doc"}
+F=${F:="_build/src/$PROJECTNAME"}
 
 # Caml tools
 OCAMLDOC=${OCAMLDOC:="ocamldoc"}
@@ -30,6 +31,8 @@ action ()
       ocb $PROJECTNAME.cmo ;;
     module-native) 
       ocb $PROJECTNAME.cmx ;;
+    module-plugin)
+      ocb $PROJECTNAME.cmxs ;;
     module)
       action module-native
       action module-byte ;;
@@ -39,19 +42,21 @@ action ()
     install-byte)
       action module-byte
       $MKDIR -p $INSTALLDIR
-      F="_build/src/$PROJECTNAME"
       $CP $F.ml $F.mli $F.cmi $F.cmo src/META $INSTALLDIR ;;
     install)
-      action module
-      $MKDIR -p $INSTALLDIR
-      F="_build/src/$PROJECTNAME"
-      $CP $F.ml $F.mli $F.cmi $F.cmo $F.cmx $F.o src/META $INSTALLDIR ;;
+      action install-byte
+      action module-native
+      $CP $F.cmx $F.o $INSTALLDIR ;;
+    install-plugin)
+      action install
+      action module-plugin
+      $CP $F.cmxs $INSTALLDIR ;;
     distrib) distrib ;;
     clean) 
       ocb -clean ;;
     clean-all) 
       action clean
-      rm -f $DOCDIR/*.html ;;
+      $RM -f $DOCDIR/*.html ;;
     *) 
       ocb $1;;
   esac;
@@ -63,6 +68,8 @@ distrib ()
   FIND=${FIND:="find"}
   GREP=${GREP:="grep"}
   TAR=${TAR:="tar"}
+  SED=${SED:="sed"}
+  MV=${MV:="mv"}
 
   DIRNAME=$PROJECTNAME-$VERSION
   ROOTDIR=/tmp/$DIRNAME
@@ -77,11 +84,12 @@ distrib ()
     \( -name "*~" -o -name ".DS_Store" -o -name ".gdb_history" \) \
     -exec $RM {} ';'
   for file in `$FIND $ROOTDIR -type f -print`; do
-    sed -i "" "s/%%VERSION%%/$VERSION/; \
+    $SED      "s/%%VERSION%%/$VERSION/; \
                s/%%COPYRIGHTYEAR%%/$COPYRIGHTYEAR/; \
                s/%%SHORTDESCRIPTION%%/$SHORTDESCRIPTION/; \
                s/%%EMAIL%%/$EMAIL/;" \
-	$file
+	$file > $file.tmp
+    $MV -f $file.tmp $file
   done
 
   action module
