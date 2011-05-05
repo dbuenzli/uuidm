@@ -15,14 +15,13 @@
 
     {e Version %%VERSION%% - %%EMAIL%% }
 
-    {b References}        
-
-    P. Leach et al.
+    {3 References}
+    {ul 
+    {- P. Leach et al.
     {e {{:http://www.ietf.org/rfc/rfc4122.txt}A universally unique identifier 
-     (UUID) URN Namespace}}, 2005.
+     (UUID) URN Namespace}}, 2005.}} *)
 
-    {1:top  }
-*)
+(** {1 UUIDs} *)
 
 type t
 (** The type for UUIDs. *)
