@@ -4,14 +4,11 @@
    Uuidm version %%VERSION%%
   ----------------------------------------------------------------------------*)
 
-(** Universally unique identifiers.  
+(** Universally unique identifiers (UUIDs).  
 
     Uuidm implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
     according to {{:http://www.ietf.org/rfc/rfc4122.txt}RFC 4122}.
-
-    Random numbers are generated using OCaml's [Random] module with a
-    private state initialized by [Random.State.make_self_init].
 
     {e Version %%VERSION%% - %%EMAIL%% }
 
@@ -28,10 +25,12 @@ type t
 
 type version = [ 
   | `V3 of t * string (** Name based with MD5 hashing *)
-  | `V4 (** Random based. *) 
-  | `V5 of t * string (** Name based with SHA-1 hasing. *) ]
+  | `V4 (** Random based *) 
+  | `V5 of t * string (** Name based with SHA-1 hasing *) ]
 (** The type for UUID versions and generation parameters. [`V3] and [`V5]
-    specify a namespace and a name for the generation. *)
+    specify a namespace and a name for the generation. [`V4] is random based 
+    with a private state seeded with [Random.State.make_self_init], use 
+    {!v4_gen} to specify your own seed. *)
 
 val nil : t
 (** [nil] is the nil UUID. *)
@@ -50,6 +49,16 @@ val ns_X500 : t
 
 val create : version -> t
 (** [create version] is an UUID of the given [version]. *)
+
+val v3 : t -> string -> t
+(** [v3 ns n] is [create `V3 (ns, n)]. *) 
+
+val v5 : t -> string -> t
+(** [v5 ns n] is [create `V5 (ns, n)]. *)
+
+val v4_gen : Random.State.t -> (unit -> t)
+(** [v4 seed] is a function that generates random version 4 UUIDs with
+    the given [seed]. *)
 
 val compare : t -> t -> int
 (** Total order on UUIDs. *)

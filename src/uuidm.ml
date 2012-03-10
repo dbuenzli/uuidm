@@ -13,10 +13,9 @@ let ns_url = "\x6b\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_oid = "\x6b\xa7\xb8\x12\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 
-let rand =                                     (* 30 random bits generator. *)
-  let s = Random.State.make_self_init () in 
-  fun () -> Random.State.bits s                            
-
+let rand s = fun () -> Random.State.bits s                  (* 30 random bits generator. *)
+let default_rand = rand (Random.State.make_self_init ())
+                              
 let md5 = Digest.string
 
 (* sha-1 digest. Based on pseudo-code of RFC 3174.
@@ -130,9 +129,10 @@ let msg_uuid v digest ns n =
   u.[8] <- Char.unsafe_chr (0b1000_0000 lor (Char.code u.[8] land 0b0011_1111));
   u
 
-let v3_uuid ns n = msg_uuid 3 md5 ns n  
-let v5_uuid ns n = msg_uuid 5 sha_1 ns n  
-let v4_uuid () =
+let v3 ns n = msg_uuid 3 md5 ns n  
+let v5 ns n = msg_uuid 5 sha_1 ns n  
+
+let v4_uuid rand =
   let r0 = rand () in 
   let r1 = rand () in 
   let r2 = rand () in
@@ -157,10 +157,14 @@ let v4_uuid () =
   u.[15] <- Char.unsafe_chr (r4 lsr 8 land 0xFF);
   u
 
+let v4_gen seed = 
+  let rand = rand seed in     
+  function () -> v4_uuid rand
+
 let create = function
-  | `V4 -> v4_uuid ()
-  | `V3 (ns, n) -> v3_uuid ns n
-  | `V5 (ns, n) -> v5_uuid ns n
+  | `V4 -> v4_uuid default_rand
+  | `V3 (ns, n) -> v3 ns n
+  | `V5 (ns, n) -> v5 ns n
 
 let compare : string -> string -> int = Pervasives.compare
 let equal u u' = compare u u' = 0
