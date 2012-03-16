@@ -36,9 +36,9 @@ Executable perf
  BuildDepends: uuidm
  Install: false
 
-Executable uuid
+Executable uuidtrip
  Path: test
- MainIs: uuid.ml
+ MainIs: uuidtrip.ml
  CompiledObject: Best
  BuildDepends: uuidm
 

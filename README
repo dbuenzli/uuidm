@@ -52,4 +52,4 @@ The resulting binaries are in `_build/test` :
 
 - `test.native` tests the library, nothing should fail.
 - `perf.native` tests the performance of the library, see `perf.native -help`.
-- `uuid.native` outputs UUIDs, see `uuid.native -help`.
+- `uuidtrip.native` outputs UUIDs, see `uuidtrip.native -help`.
