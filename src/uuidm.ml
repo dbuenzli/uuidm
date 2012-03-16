@@ -1,8 +1,8 @@
-(*----------------------------------------------------------------------------
-   Copyright (c) %%COPYRIGHTYEAR%%, Daniel C. Bünzli. All rights reserved.
-   Distributed under a BSD license, see license at the end of the file.
-   Uuidm version %%VERSION%%
-  ----------------------------------------------------------------------------*)
+(*---------------------------------------------------------------------------
+   Copyright %%COPYRIGHT%%. All rights reserved.
+   Distributed under a BSD3 license, see license at the end of the file.
+   %%NAME%% release %%VERSION%%
+  ---------------------------------------------------------------------------*)
 
 type t = string                                     (* 16 bytes long strings *)
 type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
@@ -235,8 +235,8 @@ let to_string ?(upper = false) u =
 
 let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
 
-(*----------------------------------------------------------------------------
-  Copyright (c) %%COPYRIGHTYEAR%%, Daniel C. Bünzli
+(*---------------------------------------------------------------------------
+  Copyright %%COPYRIGHT%%
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -251,7 +251,7 @@ let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
      documentation and/or other materials provided with the
      distribution.
 
-  3. Neither the name of the Daniel C. Bünzli nor the names of
+  3. Neither the name of Daniel C. Bünzli nor the names of
      contributors may be used to endorse or promote products derived
      from this software without specific prior written permission.
 
@@ -266,6 +266,6 @@ let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  ----------------------------------------------------------------------------*)
+  ---------------------------------------------------------------------------*)
 
 

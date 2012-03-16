@@ -1,5 +1,0 @@
-version = "%%VERSION%%"
-description = "%%SHORTDESCRIPTION%%"
-archive(byte) = "uuidm.cmo"
-archive(native) = "uuidm.cmx"
-archive(plugin,native) = "uuidm.cmxs"

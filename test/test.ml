@@ -1,3 +1,5 @@
+(* This code is in the public domain *)
+
 let str = Printf.sprintf
 let exec = Filename.basename Sys.executable_name
 

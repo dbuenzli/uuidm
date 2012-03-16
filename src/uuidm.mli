@@ -1,16 +1,16 @@
-(*----------------------------------------------------------------------------
-   Copyright (c) %%COPYRIGHTYEAR%%, Daniel C. Bünzli. All rights reserved.
-   Distributed under a BSD license, see license at the end of the file.
-   Uuidm version %%VERSION%%
-  ----------------------------------------------------------------------------*)
+(*---------------------------------------------------------------------------
+   Copyright %%COPYRIGHT%%. All rights reserved.
+   Distributed under a BSD3 license, see license at the end of the file.
+   %%NAME%% release %%VERSION%%
+  ---------------------------------------------------------------------------*)
 
 (** Universally unique identifiers (UUIDs).  
 
-    Uuidm implements 128 bits universally unique identifiers version
+    [Uuidm] implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
     according to {{:http://www.ietf.org/rfc/rfc4122.txt}RFC 4122}.
 
-    {e Version %%VERSION%% - %%EMAIL%% }
+    {e Release %%VERSION%% - %%AUTHORS%% }
 
     {3 References}
     {ul 
@@ -93,8 +93,8 @@ val to_string : ?upper:bool -> t -> string
 val print : ?upper:bool -> Format.formatter -> t -> unit
 (** See {!to_string}. *)
 
-(*----------------------------------------------------------------------------
-  Copyright (c) %%COPYRIGHTYEAR%%, Daniel C. Bünzli
+(*---------------------------------------------------------------------------
+  Copyright %%COPYRIGHT%%
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -109,7 +109,7 @@ val print : ?upper:bool -> Format.formatter -> t -> unit
      documentation and/or other materials provided with the
      distribution.
 
-  3. Neither the name of the Daniel C. Bünzli nor the names of
+  3. Neither the name of Daniel C. Bünzli nor the names of
      contributors may be used to endorse or promote products derived
      from this software without specific prior written permission.
 
@@ -124,4 +124,4 @@ val print : ?upper:bool -> Format.formatter -> t -> unit
   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  ----------------------------------------------------------------------------*)
+  ---------------------------------------------------------------------------*)

@@ -1,0 +1,66 @@
+OASISFormat: 0.3
+Name: uuidm
+Version: 0.9.4
+Synopsis: Universally unique identifiers (UUIDs) for OCaml
+Authors: Daniel Bünzli <daniel.buenzli at erratique.ch>
+Copyrights: (c) 2008-2012 Daniel C. Bünzli
+License: BSD3
+Homepage: http://erratique.ch/software/uuidm
+Description:
+ Uuidm is an OCaml module implementing 128 bits universally unique
+ identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
+ (random based) according to RFC 4122.
+ .
+ Uuidm is made of a single, independent, module and distributed under
+ the BSD3 license.
+
+OCamlVersion: >= 3.10.0
+Plugins: META (0.3)
+BuildTools:ocamlbuild
+
+Library uuidm
+ Path: src
+ Modules: Uuidm
+
+Executable test
+ Path: test
+ MainIs: test.ml
+ CompiledObject: Best
+ BuildDepends: uuidm
+ Install: false
+
+Executable perf
+ Path: test
+ MainIs: perf.ml
+ CompiledObject: Best
+ BuildDepends: uuidm
+ Install: false
+
+Executable uuid
+ Path: test
+ MainIs: uuid.ml
+ CompiledObject: Best
+ BuildDepends: uuidm
+
+Test test
+ Command: $test
+
+Document api
+ Title: Uuidm's documentation and API reference
+ Type: ocamlbuild (0.3)
+ BuildTools+: ocamldoc
+ XOCamlbuildLibraries: uuidm
+ XOCamlbuildPath: doc
+
+Document distribution
+ Title: "Uuidm's README and CHANGES files"
+ DataFiles: README CHANGES
+
+Document samples
+ Title: "Uuidm's sample code"
+ DataFiles: test/*.ml
+
+SourceRepository head
+ Type: git
+ Location: git://erratique.ch/repos/uuidm.git
+ Browser: http://erratique.ch/repos/uuidm
