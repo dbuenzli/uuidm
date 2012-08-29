@@ -10,11 +10,11 @@ let id_eq u s = match Uuidm.of_string s with
 
 let main () = 
   let usage = 
-    str "Usage: %s <options>\n\
-         UUID test suite\n\
+    str "Usage: %s [OPTION]...\n\
+         \ UUID test suite\n\
          Options:" exec 
   in
-  Arg.parse [] (fun _ -> ()) usage;
+  Arg.parse (Arg.align []) (fun _ -> ()) usage;
   assert (str_eq Uuidm.ns_dns "6ba7b810-9dad-11d1-80b4-00c04fd430c8");
   assert (str_eq Uuidm.ns_url "6ba7b811-9dad-11d1-80b4-00c04fd430c8");
   assert (str_eq Uuidm.ns_oid "6ba7b812-9dad-11d1-80b4-00c04fd430c8");

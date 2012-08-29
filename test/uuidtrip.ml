@@ -11,8 +11,8 @@ let err_ns_parse = " failed to parse namespace uuid"
 
 let main () = 
   let usage = 
-    str "Usage: %s <option>\n\
-         Outputs an UUID.\n\
+    str "Usage: %s [OPTION]...\n\
+         \ Outputs an UUID.\n\
          Options:" exec 
   in
   let bin = ref false in
@@ -22,22 +22,22 @@ let main () =
   let name = ref "www.example.org" in
   let options = [
     "-r", Arg.Unit (fun () -> v := `V4),
-    "output a random based UUID version 4 (default).";
+    " Output a random based UUID version 4 (default)";
     "-md5", Arg.Unit (fun () -> v := `V3),
-    "output a MD5 name based UUID version 3.";    
+    " Output a MD5 name based UUID version 3";    
     "-sha1", Arg.Unit (fun () -> v:= `V5),
-    "output a SHA-1 name based UUID version 5.";
+    " Output a SHA-1 name based UUID version 5";
     "-ns", Arg.Set_string ns,
-    "<uuid> namespace UUID for name based UUIDs (defaults to DNS namespace).";
+    "<uuid> Namespace UUID for name based UUIDs (defaults to DNS namespace)";
     "-name", Arg.Set_string name,
-    "<name> name for name based UUIDs (defaults to www.example.org).";
+    "<name> Name for name based UUIDs (defaults to www.example.org)";
     "-b", Arg.Set bin,
-    "output result in binary.";
+    " Output result in binary";
     "-u", Arg.Set up,
-    "output hexadecimal letters in uppercase." ]
+    " Output hexadecimal letters in uppercase" ]
   in
   try
-    Arg.parse options (fun _ -> ()) usage;
+    Arg.parse (Arg.align options) (fun _ -> ()) usage;
     let version = match !v with
     | `V4 -> `V4 
     | v ->
