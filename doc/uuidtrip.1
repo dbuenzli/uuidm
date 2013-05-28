@@ -1,0 +1,103 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.\"
+.\" test with nroff -man debian/uuidtrip.1 > /tmp/man.txt; less /tmp/man.txt
+.TH uuidtrip 1 "May  17, 2013"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+uuidtrip \- generate universally unique identifiers (RFC 4122)
+.SH SYNOPSIS
+.B uuidtrip \fR[\fIoptions...\fR]
+.\"
+.\" ==========================================================================
+.\" ============= DESCRIPTION ================================================
+.\" ==========================================================================
+.\"
+.SH DESCRIPTION
+.B uuidtrip 
+generates and prints universally unique identifiers version 3, 5
+(name based with MD5, SHA-1 hashing) and 4 (random based)
+according to RFC 4122.
+.B uuidtrip
+provides command line access for most functions of the Uuidm
+library.
+.\"
+.\" ==========================================================================
+.\" ================ Options =================================================
+.\" ==========================================================================
+.\"
+.SH OPTIONS
+.\" ========== -r output a random based UUID version 4 (default).
+.IP "-r"
+Generate a random based UUID version 4. This is the default.
+.\" ========== -ns <uuid> namespace UUID for name based UUIDs 
+.IP "-ns \fIuuid\fR"
+set the name space for version 3 and version 5 name based UUID's
+(options 
+.B -md5
+and 
+.B -sha1\fR).
+The default is the DNS namespace.
+.\" ========== -name <name> name for name based UUIDs
+.IP "-name \fIname\fR"
+set the name for version 3 and version 5 name based UUID's
+(options 
+.B -md5
+and 
+.B -sha1\fR).
+The default is
+.I www.example.org\fR.
+.\" ========== -md5 output a MD5 name based UUID version 3.
+.IP "-md5"
+Generate an MD5 name based UUID version 3. 
+.\" ========== -sha1 output a SHA-1 name based UUID version 5.
+.IP "-sha1"
+Generate an SHA-1 name based UUID version 5.
+.\" ========== -u output hexadecimal letters in uppercase.
+.IP "-u"
+Output the generated UUID as string with uppercase letters
+(default is lowercase letters).
+.\" ========== -b output result in binary.
+.IP "-b"
+Output the generated UUID as raw bytes (binary).
+.\" ========== -help  Display this list of options
+.IP "-help"
+Print the list of options and exit
+.\" ================ --help ==================================================
+.IP --help
+Alias for
+.B -help
+.\"
+.\" ==========================================================================
+.\" ================ SEE ALSO ================================================
+.\" ==========================================================================
+.\"
+.SH SEE ALSO
+.TP
+RFC 4122
+.TP
+API documentation at \fI/usr/share/doc/libuuidm-ocaml-dev/html/
+.\"
+.\" ==========================================================================
+.\" ================ Author ==================================================
+.\" ==========================================================================
+.\"
+.SH AUTHOR
+Daniel C. Buenzli <daniel.buenzl i@erratique.ch> is the author of
+.B uuidtrip
+and Uuidm. This manual page was written
+by Hendrik Tews <hendrik@askra.de>,
+specifically for the Debian project (and may be used by others).
