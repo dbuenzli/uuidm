@@ -1,4 +1,4 @@
-Uuidm — Declarative definition of command line interfaces for OCaml
+Uuidm — Universally unique identifiers (UUIDs) for OCaml
 -------------------------------------------------------------------------------
 Release %%VERSION%%
 
