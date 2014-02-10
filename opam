@@ -1,0 +1,14 @@
+opam-version: "1"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+homepage: "http://erratique.ch/software/uuidm"
+authors: ["Daniel Bünzli <daniel.buenzli i@erratique.ch>"]
+doc: "http://erratique.ch/software/uuidm/doc/Uuidm"
+tags: [ "uuid" "codec" ]
+license: "BSD3"
+depends: ["ocamlfind"]
+ocaml-version: [>= "3.10.0"]
+build: 
+[
+  ["./pkg/pkg-git" ] 
+  ["./pkg/build" "true" ]
+]

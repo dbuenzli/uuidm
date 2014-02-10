@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Usage: build has_native
+
+set -e 
+LOC=`dirname $0`
+
+. $LOC/pkg-builder
+
+NATIVE=$1
+
+add lib pkg/META		
+add lib src/uuidm.mli
+add lib src/uuidm.cmti
+add lib src/uuidm.cmi
+add lib src/uuidm.cmx
+add lib src/uuidm.cma
+add lib src/uuidm.a
+add lib src/uuidm.cmxa
+add lib src/uuidm.cmxs
+
+add bin test/uuidtrip
+
+add doc README.md
+add doc CHANGES.md
+
+add man doc/uuidtrip.1 man1/uuidtrip.1
+
+build
+install uuidm
