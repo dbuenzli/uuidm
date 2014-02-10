@@ -1,5 +1,5 @@
 (*---------------------------------------------------------------------------
-   Copyright %%COPYRIGHT%%. All rights reserved.
+   Copyright (c) 2008 Daniel C. Bünzli. All rights reserved.
    Distributed under a BSD3 license, see license at the end of the file.
    %%NAME%% release %%VERSION%%
   ---------------------------------------------------------------------------*)
@@ -236,7 +236,7 @@ let to_string ?(upper = false) u =
 let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
 
 (*---------------------------------------------------------------------------
-  Copyright %%COPYRIGHT%%
+  Copyright (c) 2008 Daniel C. Bünzli
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
