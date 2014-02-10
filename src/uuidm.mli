@@ -8,14 +8,14 @@
 
     [Uuidm] implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
-    according to {{:http://www.ietf.org/rfc/rfc4122.txt}RFC 4122}.
+    according to {{:http://tools.ietf.org/html/rfc4122}RFC 4122}.
 
-    {e Release %%VERSION%% - %%AUTHORS%% }
+    {e Release %%VERSION%% — %%MAINTAINER%% }
 
     {3 References}
     {ul 
     {- P. Leach et al.
-    {e {{:http://www.ietf.org/rfc/rfc4122.txt}A universally unique identifier 
+    {e {{:http://tools.ietf.org/html/rfc4122}A universally unique identifier 
      (UUID) URN Namespace}}, 2005.}} *)
 
 (** {1 UUIDs} *)
