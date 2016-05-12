@@ -83,7 +83,7 @@ let sha_1 s =
         if t <= 39 then !b lxor !c lxor !d, 0x6ED9EBA1l else
         if t <= 59 then
           (!b land !c) lor (!b land !d) lor (!c land !d), 0x8F1BBCDCl
-	else
+        else
         !b lxor !c lxor !d, 0xCA62C1D6l
       in
       let s = t &&& 0xF in
@@ -93,7 +93,7 @@ let sha_1 s =
             w.((s + 8) &&& 0xF) lxor
             w.((s + 2) &&& 0xF) lxor
             w.(s)
-	  end
+         end
       end;
       let temp = (cls 5 !a) ++ f ++ !e ++ w.(s) ++ k in
       e := !d;
@@ -192,14 +192,14 @@ let of_string ?(pos = 0) s =
       let i = ref 0 in
       let j = ref pos in
       let ihex c =
-	let i = Char.code c in
-	if i < 0x30 then raise Exit else
-	if i <= 0x39 then i - 0x30 else
-	if i < 0x41 then raise Exit else
-	if i <= 0x46 then i - 0x37 else
-	if i < 0x61 then raise Exit else
-	if i <= 0x66 then i - 0x57 else
-	raise Exit
+        let i = Char.code c in
+        if i < 0x30 then raise Exit else
+        if i <= 0x39 then i - 0x30 else
+        if i < 0x41 then raise Exit else
+        if i <= 0x46 then i - 0x37 else
+        if i < 0x61 then raise Exit else
+        if i <= 0x66 then i - 0x57 else
+        raise Exit
       in
       let byte s j = Char.unsafe_chr (ihex s.[j] lsl 4 lor ihex s.[j + 1]) in
       while (!i < 4) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
