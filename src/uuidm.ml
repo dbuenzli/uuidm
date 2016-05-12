@@ -124,10 +124,12 @@ let sha_1 s =
   Bytes.unsafe_to_string h
 
 let msg_uuid v digest ns n = 
-  let u = String.sub (digest (ns ^ n)) 0 16 in
-  u.[6] <- Char.unsafe_chr ((v lsl 4) lor (Char.code u.[6] land 0b0000_1111));
-  u.[8] <- Char.unsafe_chr (0b1000_0000 lor (Char.code u.[8] land 0b0011_1111));
-  u
+  let u = Bytes.of_string (String.sub (digest (ns ^ n)) 0 16) in
+  Bytes.set u 6 (Char.unsafe_chr
+    ((v lsl 4) lor (Char.code (Bytes.get u 6) land 0b0000_1111)));
+  Bytes.set u 8 (Char.unsafe_chr
+    (0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111)));
+  Bytes.unsafe_to_string u
 
 let v3 ns n = msg_uuid 3 md5 ns n  
 let v5 ns n = msg_uuid 5 sha_1 ns n  
