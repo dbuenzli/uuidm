@@ -4,7 +4,7 @@
    %%NAME%% release %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-(** Universally unique identifiers (UUIDs).  
+(** Universally unique identifiers (UUIDs).
 
     [Uuidm] implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
@@ -13,9 +13,9 @@
     {e Release %%VERSION%% — %%MAINTAINER%% }
 
     {3 References}
-    {ul 
+    {ul
     {- P. Leach et al.
-    {e {{:http://tools.ietf.org/html/rfc4122}A universally unique identifier 
+    {e {{:http://tools.ietf.org/html/rfc4122}A universally unique identifier
      (UUID) URN Namespace}}, 2005.}} *)
 
 (** {1 UUIDs} *)
@@ -23,13 +23,13 @@
 type t
 (** The type for UUIDs. *)
 
-type version = [ 
+type version = [
   | `V3 of t * string (** Name based with MD5 hashing *)
-  | `V4 (** Random based *) 
-  | `V5 of t * string (** Name based with SHA-1 hasing *) ]
+  | `V4 (** Random based *)
+  | `V5 of t * string (** Name based with SHA-1 hashing *) ]
 (** The type for UUID versions and generation parameters. [`V3] and [`V5]
-    specify a namespace and a name for the generation. [`V4] is random based 
-    with a private state seeded with [Random.State.make_self_init], use 
+    specify a namespace and a name for the generation. [`V4] is random based
+    with a private state seeded with [Random.State.make_self_init], use
     {!v4_gen} to specify your own seed. *)
 
 val nil : t
@@ -51,7 +51,7 @@ val create : version -> t
 (** [create version] is an UUID of the given [version]. *)
 
 val v3 : t -> string -> t
-(** [v3 ns n] is [create `V3 (ns, n)]. *) 
+(** [v3 ns n] is [create `V3 (ns, n)]. *)
 
 val v5 : t -> string -> t
 (** [v5 ns n] is [create `V5 (ns, n)]. *)
@@ -76,7 +76,7 @@ val to_bytes : t -> string
 
 (**/**)
 val unsafe_to_bytes : t -> string
-(**/**) 
+(**/**)
 
 val of_string : ?pos:int -> string -> t option
 (** [of_string pos s] converts the substring of [s] starting at [pos]
@@ -100,7 +100,7 @@ val print : ?upper:bool -> Format.formatter -> t -> unit
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are
   met:
-        
+
   1. Redistributions of source code must retain the above copyright
      notice, this list of conditions and the following disclaimer.
 

@@ -6,9 +6,9 @@ doc: "http://erratique.ch/software/uuidm/doc/Uuidm"
 tags: [ "uuid" "codec" ]
 license: "BSD3"
 depends: ["ocamlfind"]
-ocaml-version: [>= "3.10.0"]
-build: 
+ocaml-version: [>= "4.02.0"]
+build:
 [
-  ["./pkg/pkg-git" ] 
+  ["./pkg/pkg-git" ]
   ["./pkg/build" "true" ]
 ]
