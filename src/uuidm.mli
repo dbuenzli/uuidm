@@ -26,7 +26,7 @@ type t
 type version = [ 
   | `V3 of t * string (** Name based with MD5 hashing *)
   | `V4 (** Random based *) 
-  | `V5 of t * string (** Name based with SHA-1 hasing *) ]
+  | `V5 of t * string (** Name based with SHA-1 hashing *) ]
 (** The type for UUID versions and generation parameters. [`V3] and [`V5]
     specify a namespace and a name for the generation. [`V4] is random based 
     with a private state seeded with [Random.State.make_self_init], use 
