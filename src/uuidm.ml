@@ -217,12 +217,12 @@ let of_string ?(pos = 0) s =
 let to_string ?(upper = false) u =
   let hbase = if upper then 0x37 else 0x57 in
   let hex hbase i = Char.unsafe_chr (if i < 10 then 0x30 + i else hbase + i) in
-  let s = String.copy "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" in
+  let s = Bytes.of_string "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" in
   let i = ref 0 in
   let j = ref 0 in
   let byte s i c = 
-    s.[i] <- hex hbase (c lsr 4);
-    s.[i + 1] <- hex hbase (c land 0x0F) 
+    Bytes.set s i (hex hbase (c lsr 4));
+    Bytes.set s (i + 1) (hex hbase (c land 0x0F))
   in
   while (!j < 4) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   incr i;
@@ -233,7 +233,7 @@ let to_string ?(upper = false) u =
   while (!j < 10) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   incr i;
   while (!j < 16) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
-  s
+  Bytes.unsafe_to_string s
 
 let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
 
