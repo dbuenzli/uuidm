@@ -140,24 +140,24 @@ let v4_uuid rand =
   let r2 = rand () in
   let r3 = rand () in
   let r4 = rand () in
-  let u = String.copy nil in
-  u.[0] <- Char.unsafe_chr (r0 land 0xFF);
-  u.[1] <- Char.unsafe_chr (r0 lsr 8 land 0xFF);
-  u.[2] <- Char.unsafe_chr (r0 lsr 16 land 0xFF);
-  u.[3] <- Char.unsafe_chr (r1 land 0xFF);
-  u.[4] <- Char.unsafe_chr (r1 lsr 8 land 0xFF);
-  u.[5] <- Char.unsafe_chr (r1 lsr 16 land 0xFF);
-  u.[6] <- Char.unsafe_chr (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
-  u.[7] <- Char.unsafe_chr (r2 land 0xFF);
-  u.[8] <- Char.unsafe_chr (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
-  u.[9] <- Char.unsafe_chr (r2 lsr 8 land 0xFF);
-  u.[10] <- Char.unsafe_chr (r2 lsr 16 land 0xFF);
-  u.[11] <- Char.unsafe_chr (r3 land 0xFF);
-  u.[12] <- Char.unsafe_chr (r3 lsr 8 land 0xFF);
-  u.[13] <- Char.unsafe_chr (r3 lsr 16 land 0xFF);
-  u.[14] <- Char.unsafe_chr (r4 land 0xFF);
-  u.[15] <- Char.unsafe_chr (r4 lsr 8 land 0xFF);
-  u
+  let u = Bytes.of_string nil in
+  Bytes.set u 0 (Char.unsafe_chr (r0 land 0xFF));
+  Bytes.set u 1 (Char.unsafe_chr (r0 lsr 8 land 0xFF));
+  Bytes.set u 2 (Char.unsafe_chr (r0 lsr 16 land 0xFF));
+  Bytes.set u 3 (Char.unsafe_chr (r1 land 0xFF));
+  Bytes.set u 4 (Char.unsafe_chr (r1 lsr 8 land 0xFF));
+  Bytes.set u 5 (Char.unsafe_chr (r1 lsr 16 land 0xFF));
+  Bytes.set u 6 (Char.unsafe_chr (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111)));
+  Bytes.set u 7 (Char.unsafe_chr (r2 land 0xFF));
+  Bytes.set u 8 (Char.unsafe_chr (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111)));
+  Bytes.set u 9 (Char.unsafe_chr (r2 lsr 8 land 0xFF));
+  Bytes.set u 10 (Char.unsafe_chr (r2 lsr 16 land 0xFF));
+  Bytes.set u 11 (Char.unsafe_chr (r3 land 0xFF));
+  Bytes.set u 12 (Char.unsafe_chr (r3 lsr 8 land 0xFF));
+  Bytes.set u 13 (Char.unsafe_chr (r3 lsr 16 land 0xFF));
+  Bytes.set u 14 (Char.unsafe_chr (r4 land 0xFF));
+  Bytes.set u 15 (Char.unsafe_chr (r4 lsr 8 land 0xFF));
+  Bytes.unsafe_to_string u
 
 let v4_gen seed = 
   let rand = rand seed in     
