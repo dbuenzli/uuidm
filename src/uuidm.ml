@@ -188,7 +188,7 @@ let of_string ?(pos = 0) s =
     None 
   else
     try
-      let u = String.copy nil in
+      let u = Bytes.of_string nil in
       let i = ref 0 in
       let j = ref pos in
       let ihex c = 
@@ -202,15 +202,15 @@ let of_string ?(pos = 0) s =
 	raise Exit
       in
       let byte s j = Char.unsafe_chr (ihex s.[j] lsl 4 lor ihex s.[j + 1]) in
-      while (!i < 4) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
+      while (!i < 4) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
       incr j;
-      while (!i < 6) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
+      while (!i < 6) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
       incr j;
-      while (!i < 8) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
+      while (!i < 8) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
       incr j;
-      while (!i < 10) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
+      while (!i < 10) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
       incr j;
-      while (!i < 16) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+      while (!i < 16) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
       Some u
     with Exit -> None
 
