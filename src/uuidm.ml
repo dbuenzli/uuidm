@@ -176,7 +176,7 @@ let of_bytes ?(pos = 0) s =
   if pos + 16 > len then None else
   Some (String.sub s pos 16)
 
-let to_bytes = String.copy
+let to_bytes u = Bytes.(unsafe_to_string (of_string u))
 let unsafe_to_bytes u = u
 
 let of_string ?(pos = 0) s =
