@@ -46,7 +46,7 @@ let ns =
     | None -> `Error (strf "%S: could not parse namespace UUID" s)
     | Some ns -> `Ok ns
     in
-    parse, Uuidm.print ~upper:false
+    parse, Uuidm.pp
   in
   let doc = "Namespace UUID for name based UUIDs (version 4 or 5).
              Defaults to the DNS namespace UUID."
