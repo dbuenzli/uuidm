@@ -26,20 +26,20 @@ let sha_1 s =
     let blen = 8 * len in
     let rem = len mod 64 in
     let mlen = if rem > 55 then len + 128 - rem else len + 64 - rem in
-    let m = String.create mlen in
-    String.blit s 0 m 0 len;
-    String.fill m len (mlen - len) '\x00';
-    m.[len] <- '\x80';
+    let m = Bytes.create mlen in
+    Bytes.blit_string s 0 m 0 len;
+    Bytes.fill m len (mlen - len) '\x00';
+    Bytes.set m len '\x80';
     if Sys.word_size > 32 then begin
-      m.[mlen - 8] <- Char.unsafe_chr (blen lsr 56 land 0xFF);
-      m.[mlen - 7] <- Char.unsafe_chr (blen lsr 48 land 0xFF);
-      m.[mlen - 6] <- Char.unsafe_chr (blen lsr 40 land 0xFF);
-      m.[mlen - 5] <- Char.unsafe_chr (blen lsr 32 land 0xFF);
+      Bytes.set m (mlen - 8) (Char.unsafe_chr (blen lsr 56 land 0xFF));
+      Bytes.set m (mlen - 7) (Char.unsafe_chr (blen lsr 48 land 0xFF));
+      Bytes.set m (mlen - 6) (Char.unsafe_chr (blen lsr 40 land 0xFF));
+      Bytes.set m (mlen - 5) (Char.unsafe_chr (blen lsr 32 land 0xFF));
     end;
-    m.[mlen - 4] <- Char.unsafe_chr (blen lsr 24 land 0xFF);
-    m.[mlen - 3] <- Char.unsafe_chr (blen lsr 16 land 0xFF);
-    m.[mlen - 2] <- Char.unsafe_chr (blen lsr 8 land 0xFF);
-    m.[mlen - 1] <- Char.unsafe_chr (blen land 0xFF);
+    Bytes.set m (mlen - 4) (Char.unsafe_chr (blen lsr 24 land 0xFF));
+    Bytes.set m (mlen - 3) (Char.unsafe_chr (blen lsr 16 land 0xFF));
+    Bytes.set m (mlen - 2) (Char.unsafe_chr (blen lsr 8 land 0xFF));
+    Bytes.set m (mlen - 1) (Char.unsafe_chr (blen land 0xFF));
     m
   in
   (* Operations on int32 *)
@@ -65,15 +65,15 @@ let sha_1 s =
   let c = ref 0l in
   let d = ref 0l in
   let e = ref 0l in
-  for i = 0 to ((String.length m) / 64) - 1 do             (* For each block *)
+  for i = 0 to ((Bytes.length m) / 64) - 1 do              (* For each block *)
     (* Fill w *)
     let base = i * 64 in
     for j = 0 to 15 do
       let k = base + (j * 4) in
-      w.(j) <- sl (Int32.of_int (Char.code m.[k])) 24 lor
-               sl (Int32.of_int (Char.code m.[k + 1])) 16 lor
-               sl (Int32.of_int (Char.code m.[k + 2])) 8 lor
-               (Int32.of_int (Char.code m.[k + 3]))
+      w.(j) <- sl (Int32.of_int (Char.code @@ Bytes.get m k)) 24 lor
+               sl (Int32.of_int (Char.code @@ Bytes.get m (k + 1))) 16 lor
+               sl (Int32.of_int (Char.code @@ Bytes.get m (k + 2))) 8 lor
+               (Int32.of_int (Char.code @@ Bytes.get m (k + 3)))
     done;
     (* Loop *)
     a := !h0; b := !h1; c := !h2; d := !h3; e := !h4;
@@ -109,25 +109,27 @@ let sha_1 s =
     h3 := !h3 ++ !d;
     h4 := !h4 ++ !e
   done;
-  let h = String.create 20 in
+  let h = Bytes.create 20 in
   let i2s h k i =
-    h.[k] <- Char.unsafe_chr ((Int32.to_int (sr i 24)) &&& 0xFF);
-    h.[k + 1] <- Char.unsafe_chr ((Int32.to_int (sr i 16)) &&& 0xFF);
-    h.[k + 2] <- Char.unsafe_chr ((Int32.to_int (sr i 8)) &&& 0xFF);
-    h.[k + 3] <- Char.unsafe_chr ((Int32.to_int i) &&& 0xFF);
+    Bytes.set h k (Char.unsafe_chr ((Int32.to_int (sr i 24)) &&& 0xFF));
+    Bytes.set h (k + 1) (Char.unsafe_chr ((Int32.to_int (sr i 16)) &&& 0xFF));
+    Bytes.set h (k + 2) (Char.unsafe_chr ((Int32.to_int (sr i 8)) &&& 0xFF));
+    Bytes.set h (k + 3) (Char.unsafe_chr ((Int32.to_int i) &&& 0xFF));
   in
   i2s h 0 !h0;
   i2s h 4 !h1;
   i2s h 8 !h2;
   i2s h 12 !h3;
   i2s h 16 !h4;
-  h
+  Bytes.unsafe_to_string h
 
 let msg_uuid v digest ns n =
-  let u = String.sub (digest (ns ^ n)) 0 16 in
-  u.[6] <- Char.unsafe_chr ((v lsl 4) lor (Char.code u.[6] land 0b0000_1111));
-  u.[8] <- Char.unsafe_chr (0b1000_0000 lor (Char.code u.[8] land 0b0011_1111));
-  u
+  let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in
+  Bytes.set u 6 @@ Char.unsafe_chr
+    ((v lsl 4) lor (Char.code (Bytes.get u 6) land 0b0000_1111));
+  Bytes.set u 8 @@ Char.unsafe_chr
+    (0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111));
+  Bytes.unsafe_to_string u
 
 let v3 ns n = msg_uuid 3 md5 ns n
 let v5 ns n = msg_uuid 5 sha_1 ns n
@@ -138,24 +140,26 @@ let v4_uuid rand =
   let r2 = rand () in
   let r3 = rand () in
   let r4 = rand () in
-  let u = String.copy nil in
-  u.[0] <- Char.unsafe_chr (r0 land 0xFF);
-  u.[1] <- Char.unsafe_chr (r0 lsr 8 land 0xFF);
-  u.[2] <- Char.unsafe_chr (r0 lsr 16 land 0xFF);
-  u.[3] <- Char.unsafe_chr (r1 land 0xFF);
-  u.[4] <- Char.unsafe_chr (r1 lsr 8 land 0xFF);
-  u.[5] <- Char.unsafe_chr (r1 lsr 16 land 0xFF);
-  u.[6] <- Char.unsafe_chr (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
-  u.[7] <- Char.unsafe_chr (r2 land 0xFF);
-  u.[8] <- Char.unsafe_chr (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
-  u.[9] <- Char.unsafe_chr (r2 lsr 8 land 0xFF);
-  u.[10] <- Char.unsafe_chr (r2 lsr 16 land 0xFF);
-  u.[11] <- Char.unsafe_chr (r3 land 0xFF);
-  u.[12] <- Char.unsafe_chr (r3 lsr 8 land 0xFF);
-  u.[13] <- Char.unsafe_chr (r3 lsr 16 land 0xFF);
-  u.[14] <- Char.unsafe_chr (r4 land 0xFF);
-  u.[15] <- Char.unsafe_chr (r4 lsr 8 land 0xFF);
-  u
+  let u = Bytes.create 16 in
+  Bytes.set u 0 @@ Char.unsafe_chr (r0 land 0xFF);
+  Bytes.set u 1 @@ Char.unsafe_chr (r0 lsr 8 land 0xFF);
+  Bytes.set u 2 @@ Char.unsafe_chr (r0 lsr 16 land 0xFF);
+  Bytes.set u 3 @@ Char.unsafe_chr (r1 land 0xFF);
+  Bytes.set u 4 @@ Char.unsafe_chr (r1 lsr 8 land 0xFF);
+  Bytes.set u 5 @@ Char.unsafe_chr (r1 lsr 16 land 0xFF);
+  Bytes.set u 6 @@ Char.unsafe_chr
+    (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
+  Bytes.set u 7 @@ Char.unsafe_chr (r2 land 0xFF);
+  Bytes.set u 8 @@ Char.unsafe_chr
+    (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
+  Bytes.set u 9 @@ Char.unsafe_chr (r2 lsr 8 land 0xFF);
+  Bytes.set u 10 @@ Char.unsafe_chr (r2 lsr 16 land 0xFF);
+  Bytes.set u 11 @@ Char.unsafe_chr (r3 land 0xFF);
+  Bytes.set u 12 @@ Char.unsafe_chr (r3 lsr 8 land 0xFF);
+  Bytes.set u 13 @@ Char.unsafe_chr (r3 lsr 16 land 0xFF);
+  Bytes.set u 14 @@ Char.unsafe_chr (r4 land 0xFF);
+  Bytes.set u 15 @@ Char.unsafe_chr (r4 lsr 8 land 0xFF);
+  Bytes.unsafe_to_string u
 
 let v4_gen seed =
   let rand = rand seed in
@@ -174,7 +178,7 @@ let of_bytes ?(pos = 0) s =
   if pos + 16 > len then None else
   Some (String.sub s pos 16)
 
-let to_bytes = String.copy
+let to_bytes s = s
 let unsafe_to_bytes u = u
 
 let of_string ?(pos = 0) s =
@@ -185,7 +189,7 @@ let of_string ?(pos = 0) s =
   then
     None
   else try
-    let u = String.copy nil in
+    let u = Bytes.create 16 in
     let i = ref 0 in
     let j = ref pos in
     let ihex c =
@@ -199,27 +203,27 @@ let of_string ?(pos = 0) s =
       raise Exit
     in
     let byte s j = Char.unsafe_chr (ihex s.[j] lsl 4 lor ihex s.[j + 1]) in
-    while (!i < 4) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    while (!i < 4) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
     incr j;
-    while (!i < 6) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    while (!i < 6) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
     incr j;
-    while (!i < 8) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    while (!i < 8) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
     incr j;
-    while (!i < 10) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    while (!i < 10) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
     incr j;
-    while (!i < 16) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
-    Some u
+    while (!i < 16) do Bytes.set u !i (byte s !j); j := !j + 2; incr i done;
+    Some (Bytes.unsafe_to_string u)
   with Exit -> None
 
 let to_string ?(upper = false) u =
   let hbase = if upper then 0x37 else 0x57 in
   let hex hbase i = Char.unsafe_chr (if i < 10 then 0x30 + i else hbase + i) in
-  let s = String.copy "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" in
+  let s = Bytes.of_string "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" in
   let i = ref 0 in
   let j = ref 0 in
   let byte s i c =
-    s.[i] <- hex hbase (c lsr 4);
-    s.[i + 1] <- hex hbase (c land 0x0F)
+    Bytes.set s i @@ hex hbase (c lsr 4);
+    Bytes.set s (i + 1) @@ hex hbase (c land 0x0F)
   in
   while (!j < 4) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   incr i;
@@ -230,7 +234,7 @@ let to_string ?(upper = false) u =
   while (!j < 10) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   incr i;
   while (!j < 16) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
-  s
+  Bytes.unsafe_to_string s
 
 let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
 
