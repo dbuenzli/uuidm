@@ -1,14 +1,20 @@
-opam-version: "1"
+opam-version: "1.2"
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
-homepage: "http://erratique.ch/software/uuidm"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
+homepage: "http://erratique.ch/software/uuidm"
 doc: "http://erratique.ch/software/uuidm/doc/Uuidm"
+dev-repo: "http://erratique.ch/repos/uuidm.git"
+bug-reports: "https://github.com/dbuenzli/uuidm/issues"
 tags: [ "uuid" "codec" "org:erratique" ]
 license: "ISC"
-depends: ["ocamlfind"]
-ocaml-version: [>= "3.10.0"]
-build:
-[
-  ["./pkg/pkg-git" ]
-  ["./pkg/build" "true" ]
+available: [ ocaml-version >= "4.01.0"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build} ]
+depopts: [
+  "cmdliner"
 ]
+build:
+[  "ocaml" "pkg/pkg.ml" "build"
+           "--pinned" "%{pinned}%"
+           "--with-cmdliner" "%{cmdliner:installed}%" ]
