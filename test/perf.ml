@@ -3,16 +3,16 @@
 let str = Printf.sprintf
 let exec = Filename.basename Sys.executable_name
 
-let main () = 
-  let usage = 
+let main () =
+  let usage =
     str "Usage: %s [OPTION]...\n\
          \ UUID performance tests.\n\
          Options:" exec
   in
-  let n = ref 10_000_000 in       
+  let n = ref 10_000_000 in
   let v = ref `V4 in
   let cstr = ref false in
-  let options = [ 
+  let options = [
     "-n", Arg.Set_int n,
     "<int> Number of ids to generate";
     "-str", Arg.Set cstr,
@@ -20,14 +20,14 @@ let main () =
     "-r", Arg.Unit (fun () -> v := `V4),
     " Random based UUID version 4 (default)";
     "-md5", Arg.Unit (fun () -> v := `V3 (Uuidm.ns_dns,"www.example.org")),
-    " MD5 name based UUID version 3";    
+    " MD5 name based UUID version 3";
     "-sha1", Arg.Unit (fun () -> v := `V5 (Uuidm.ns_dns,"www.example.org")),
     " SHA-1 name based UUID version 5"; ]
   in
   Arg.parse (Arg.align options) (fun _ -> ()) usage;
   let v = !v in
-  let f = 
-    if !cstr then fun v -> ignore (Uuidm.to_string (Uuidm.create v)) else 
+  let f =
+    if !cstr then fun v -> ignore (Uuidm.to_string (Uuidm.create v)) else
     fun v -> ignore (Uuidm.create v)
   in
   for i = 1 to !n do f v done

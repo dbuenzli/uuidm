@@ -13,20 +13,20 @@ let ns_url = "\x6b\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_oid = "\x6b\xa7\xb8\x12\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 
-let rand s = fun () -> Random.State.bits s                  (* 30 random bits generator. *)
+let rand s = fun () -> Random.State.bits s      (* 30 random bits generator. *)
 let default_rand = rand (Random.State.make_self_init ())
-                              
+
 let md5 = Digest.string
 
 (* sha-1 digest. Based on pseudo-code of RFC 3174.
    Slow and ugly but does the job. *)
-let sha_1 s =                            
-  let sha_1_pad s = 
+let sha_1 s =
+  let sha_1_pad s =
     let len = String.length s in
     let blen = 8 * len in
     let rem = len mod 64 in
     let mlen = if rem > 55 then len + 128 - rem else len + 64 - rem in
-    let m = String.create mlen in 
+    let m = String.create mlen in
     String.blit s 0 m 0 len;
     String.fill m len (mlen - len) '\x00';
     m.[len] <- '\x80';
@@ -65,10 +65,10 @@ let sha_1 s =
   let c = ref 0l in
   let d = ref 0l in
   let e = ref 0l in
-  for i = 0 to ((String.length m) / 64) - 1 do             (* For each block *) 
+  for i = 0 to ((String.length m) / 64) - 1 do             (* For each block *)
     (* Fill w *)
     let base = i * 64 in
-    for j = 0 to 15 do 
+    for j = 0 to 15 do
       let k = base + (j * 4) in
       w.(j) <- sl (Int32.of_int (Char.code m.[k])) 24 lor
                sl (Int32.of_int (Char.code m.[k + 1])) 16 lor
@@ -77,23 +77,23 @@ let sha_1 s =
     done;
     (* Loop *)
     a := !h0; b := !h1; c := !h2; d := !h3; e := !h4;
-    for t = 0 to 79 do 
-      let f, k = 
+    for t = 0 to 79 do
+      let f, k =
         if t <= 19 then (!b land !c) lor ((lnot !b) land !d), 0x5A827999l else
         if t <= 39 then !b lxor !c lxor !d, 0x6ED9EBA1l else
-        if t <= 59 then 
-	  (!b land !c) lor (!b land !d) lor (!c land !d), 0x8F1BBCDCl 
-	else
+        if t <= 59 then
+          (!b land !c) lor (!b land !d) lor (!c land !d), 0x8F1BBCDCl
+        else
         !b lxor !c lxor !d, 0xCA62C1D6l
       in
       let s = t &&& 0xF in
       if (t >= 16) then begin
-	  w.(s) <- cls 1 begin 
-	    w.((s + 13) &&& 0xF) lxor 
-	    w.((s + 8) &&& 0xF) lxor 
-	    w.((s + 2) &&& 0xF) lxor
-	    w.(s)
-	  end
+        w.(s) <- cls 1 begin
+            w.((s + 13) &&& 0xF) lxor
+            w.((s + 8) &&& 0xF) lxor
+            w.((s + 2) &&& 0xF) lxor
+            w.(s)
+          end
       end;
       let temp = (cls 5 !a) ++ f ++ !e ++ w.(s) ++ k in
       e := !d;
@@ -123,18 +123,18 @@ let sha_1 s =
   i2s h 16 !h4;
   h
 
-let msg_uuid v digest ns n = 
+let msg_uuid v digest ns n =
   let u = String.sub (digest (ns ^ n)) 0 16 in
   u.[6] <- Char.unsafe_chr ((v lsl 4) lor (Char.code u.[6] land 0b0000_1111));
   u.[8] <- Char.unsafe_chr (0b1000_0000 lor (Char.code u.[8] land 0b0011_1111));
   u
 
-let v3 ns n = msg_uuid 3 md5 ns n  
-let v5 ns n = msg_uuid 5 sha_1 ns n  
+let v3 ns n = msg_uuid 3 md5 ns n
+let v5 ns n = msg_uuid 5 sha_1 ns n
 
 let v4_uuid rand =
-  let r0 = rand () in 
-  let r1 = rand () in 
+  let r0 = rand () in
+  let r1 = rand () in
   let r2 = rand () in
   let r3 = rand () in
   let r4 = rand () in
@@ -157,14 +157,14 @@ let v4_uuid rand =
   u.[15] <- Char.unsafe_chr (r4 lsr 8 land 0xFF);
   u
 
-let v4_gen seed = 
-  let rand = rand seed in     
+let v4_gen seed =
+  let rand = rand seed in
   function () -> v4_uuid rand
 
 let create = function
-  | `V4 -> v4_uuid default_rand
-  | `V3 (ns, n) -> v3 ns n
-  | `V5 (ns, n) -> v5 ns n
+| `V4 -> v4_uuid default_rand
+| `V3 (ns, n) -> v3 ns n
+| `V5 (ns, n) -> v5 ns n
 
 let compare : string -> string -> int = Pervasives.compare
 let equal u u' = compare u u' = 0
@@ -179,38 +179,37 @@ let unsafe_to_bytes u = u
 
 let of_string ?(pos = 0) s =
   let len = String.length s in
-  if 
-    pos + 36 > len || s.[pos + 8] <> '-' || s.[pos + 13] <> '-' || 
-    s.[pos + 18] <> '-' || s.[pos + 23] <> '-' 
-  then 
-    None 
-  else
-    try
-      let u = String.copy nil in
-      let i = ref 0 in
-      let j = ref pos in
-      let ihex c = 
-	let i = Char.code c in 
-	if i < 0x30 then raise Exit else 
-	if i <= 0x39 then i - 0x30 else
-	if i < 0x41 then raise Exit else
-	if i <= 0x46 then i - 0x37 else
-	if i < 0x61 then raise Exit else
-	if i <= 0x66 then i - 0x57 else
-	raise Exit
-      in
-      let byte s j = Char.unsafe_chr (ihex s.[j] lsl 4 lor ihex s.[j + 1]) in
-      while (!i < 4) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
-      incr j;
-      while (!i < 6) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
-      incr j;
-      while (!i < 8) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
-      incr j;
-      while (!i < 10) do u.[!i] <- byte s !j; j := !j + 2; incr i done; 
-      incr j;
-      while (!i < 16) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
-      Some u
-    with Exit -> None
+  if
+    pos + 36 > len || s.[pos + 8] <> '-' || s.[pos + 13] <> '-' ||
+    s.[pos + 18] <> '-' || s.[pos + 23] <> '-'
+  then
+    None
+  else try
+    let u = String.copy nil in
+    let i = ref 0 in
+    let j = ref pos in
+    let ihex c =
+      let i = Char.code c in
+      if i < 0x30 then raise Exit else
+      if i <= 0x39 then i - 0x30 else
+      if i < 0x41 then raise Exit else
+      if i <= 0x46 then i - 0x37 else
+      if i < 0x61 then raise Exit else
+      if i <= 0x66 then i - 0x57 else
+      raise Exit
+    in
+    let byte s j = Char.unsafe_chr (ihex s.[j] lsl 4 lor ihex s.[j + 1]) in
+    while (!i < 4) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    incr j;
+    while (!i < 6) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    incr j;
+    while (!i < 8) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    incr j;
+    while (!i < 10) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    incr j;
+    while (!i < 16) do u.[!i] <- byte s !j; j := !j + 2; incr i done;
+    Some u
+  with Exit -> None
 
 let to_string ?(upper = false) u =
   let hbase = if upper then 0x37 else 0x57 in
@@ -218,9 +217,9 @@ let to_string ?(upper = false) u =
   let s = String.copy "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" in
   let i = ref 0 in
   let j = ref 0 in
-  let byte s i c = 
+  let byte s i c =
     s.[i] <- hex hbase (c lsr 4);
-    s.[i + 1] <- hex hbase (c land 0x0F) 
+    s.[i + 1] <- hex hbase (c land 0x0F)
   in
   while (!j < 4) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   incr i;
@@ -242,7 +241,7 @@ let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are
   met:
-        
+
   1. Redistributions of source code must retain the above copyright
      notice, this list of conditions and the following disclaimer.
 
@@ -267,5 +266,3 @@ let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ---------------------------------------------------------------------------*)
-
-

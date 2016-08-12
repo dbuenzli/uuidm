@@ -9,11 +9,11 @@ let exec = Filename.basename Sys.executable_name
 let pr_err s = Printf.eprintf "%s:%s\n" exec s
 let err_ns_parse = " failed to parse namespace uuid"
 
-let main () = 
-  let usage = 
+let main () =
+  let usage =
     str "Usage: %s [OPTION]...\n\
          \ Outputs an UUID.\n\
-         Options:" exec 
+         Options:" exec
   in
   let bin = ref false in
   let up = ref false in
@@ -24,7 +24,7 @@ let main () =
     "-r", Arg.Unit (fun () -> v := `V4),
     " Output a random based UUID version 4 (default)";
     "-md5", Arg.Unit (fun () -> v := `V3),
-    " Output a MD5 name based UUID version 3";    
+    " Output a MD5 name based UUID version 3";
     "-sha1", Arg.Unit (fun () -> v:= `V5),
     " Output a SHA-1 name based UUID version 5";
     "-ns", Arg.Set_string ns,
@@ -39,18 +39,18 @@ let main () =
   try
     Arg.parse (Arg.align options) (fun _ -> ()) usage;
     let version = match !v with
-    | `V4 -> `V4 
+    | `V4 -> `V4
     | v ->
 	match Uuidm.of_string !ns with
-	| None -> failwith err_ns_parse 
+	| None -> failwith err_ns_parse
 	| Some u -> if v = `V3 then `V3 (u, !name) else `V5 (u, !name)
     in
-    let u = Uuidm.create version in 
+    let u = Uuidm.create version in
     let s = if !bin then Uuidm.to_bytes u else Uuidm.to_string ~upper:!up u in
     print_endline s
   with
   | Failure e -> (pr_err e; exit 1)
-  
+
 let () = main ()
 
 (*---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ let () = main ()
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are
   met:
-        
+
   1. Redistributions of source code must retain the above copyright
      notice, this list of conditions and the following disclaimer.
 

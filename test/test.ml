@@ -8,11 +8,11 @@ let id_eq u s = match Uuidm.of_string s with
 | None -> false
 | Some u' -> Uuidm.equal u u'
 
-let main () = 
-  let usage = 
+let main () =
+  let usage =
     str "Usage: %s [OPTION]...\n\
          \ UUID test suite\n\
-         Options:" exec 
+         Options:" exec
   in
   Arg.parse (Arg.align []) (fun _ -> ()) usage;
   assert (str_eq Uuidm.ns_dns "6ba7b810-9dad-11d1-80b4-00c04fd430c8");
