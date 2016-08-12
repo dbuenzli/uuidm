@@ -11,6 +11,7 @@ available: [ ocaml-version >= "4.01.0"]
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
+  "topkg" {build}
   "base-bytes" ]
 depopts: [
   "cmdliner"
