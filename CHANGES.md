@@ -1,6 +1,11 @@
 
-- Build depend on topkg.
+
 - Relicensed from BSD3 to ISC.
+- Build depend on topkg.
+- `uuidtrip` uses `Cmdliner` which becomes a depopt of the
+  package. The command line interface is unchanged except for long
+  options which have to be written with a double dash and binary
+  output no longer adds an ending newline.
 
 v0.9.5 2012-08-05 Lausanne
 --------------------------

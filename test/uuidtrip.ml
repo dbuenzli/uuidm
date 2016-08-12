@@ -4,54 +4,90 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-let str = Printf.sprintf
-let exec = Filename.basename Sys.executable_name
-let pr_err s = Printf.eprintf "%s:%s\n" exec s
-let err_ns_parse = " failed to parse namespace uuid"
+let strf = Printf.sprintf
 
-let main () =
-  let usage =
-    str "Usage: %s [OPTION]...\n\
-         \ Outputs an UUID.\n\
-         Options:" exec
+let gen version ns name upper binary =
+  let version = match version with
+  | `V3 -> `V3 (ns, name)
+  | `V4 -> `V4
+  | `V5 -> `V5 (ns, name)
   in
-  let bin = ref false in
-  let up = ref false in
-  let v = ref `V4 in
-  let ns = ref (Uuidm.to_string Uuidm.ns_dns) in
-  let name = ref "www.example.org" in
-  let options = [
-    "-r", Arg.Unit (fun () -> v := `V4),
-    " Output a random based UUID version 4 (default)";
-    "-md5", Arg.Unit (fun () -> v := `V3),
-    " Output a MD5 name based UUID version 3";
-    "-sha1", Arg.Unit (fun () -> v:= `V5),
-    " Output a SHA-1 name based UUID version 5";
-    "-ns", Arg.Set_string ns,
-    "<uuid> Namespace UUID for name based UUIDs (defaults to DNS namespace)";
-    "-name", Arg.Set_string name,
-    "<name> Name for name based UUIDs (defaults to www.example.org)";
-    "-b", Arg.Set bin,
-    " Output result in binary";
-    "-u", Arg.Set up,
-    " Output hexadecimal letters in uppercase" ]
+  let u = Uuidm.create version in
+  let s = match binary with
+  | true -> Uuidm.to_bytes u
+  | false -> strf "%s\n" (Uuidm.to_string ~upper u)
   in
-  try
-    Arg.parse (Arg.align options) (fun _ -> ()) usage;
-    let version = match !v with
-    | `V4 -> `V4
-    | v ->
-	match Uuidm.of_string !ns with
-	| None -> failwith err_ns_parse
-	| Some u -> if v = `V3 then `V3 (u, !name) else `V5 (u, !name)
+  print_string s; flush stdout
+
+(* Command line interface *)
+
+open Cmdliner
+
+let version =
+  let v3 =
+    let doc =
+      "Generate a MD5 name based UUID version 3, see option $(b,--name)." in
+    `V3, Arg.info ["md5"] ~doc
+  in
+  let v4 =
+    let doc = "Generate a random based UUID version 4 (default)." in
+    `V4, Arg.info ["r"; "random"] ~doc
+  in
+  let v5 =
+    let doc =
+      "Generate a SHA-1 name based UUID version 5, see option $(b,--name)." in
+    `V5, Arg.info ["sha1"] ~doc
+  in
+  Arg.(value & vflag `V4 [v3; v4; v5])
+
+let ns =
+  let ns_arg =
+    let parse s = match Uuidm.of_string s with
+    | None -> `Error (strf "%S: could not parse namespace UUID" s)
+    | Some ns -> `Ok ns
     in
-    let u = Uuidm.create version in
-    let s = if !bin then Uuidm.to_bytes u else Uuidm.to_string ~upper:!up u in
-    print_endline s
-  with
-  | Failure e -> (pr_err e; exit 1)
+    parse, Uuidm.print ~upper:false
+  in
+  let doc = "Namespace UUID for name based UUIDs (version 4 or 5).
+             Defaults to the DNS namespace UUID."
+  in
+  Arg.(value & opt ns_arg Uuidm.ns_dns & info ["ns"; "namespace"] ~doc)
 
-let () = main ()
+let name_ =
+  let doc = "Name for name based UUIDs (version 4 or 5)." in
+  Arg.(value & opt string "www.example.org" & info ["name"] ~doc)
+
+let upper =
+  let doc = "Output hexadecimal letters in uppercase" in
+  Arg.(value & flag & info ["u"; "uppercase"] ~doc)
+
+let binary =
+  let doc = "Output the UUID as its 16 bytes binary representation."
+  in
+  Arg.(value & flag & info ["b"; "binary"] ~doc)
+
+let cmd =
+  let doc = "Generates universally unique identifiers (UUIDs)" in
+  let man = [
+    `S "DESCRIPTION";
+    `P "$(tname) generates 128 bits universally unique identifiers version
+        3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
+        according to RFC 4122.";
+    `P "Invoked without any option, a random based version 4 UUID is
+        generated and written on stdout.";
+    `S "SEE ALSO";
+    `P "P. Leach et al. A universally unique identifier (UUID) URN Namespace,
+        2005. $(i, http://tools.ietf.org/html/rfc4122)";
+    `S "BUGS";
+    `P "This program is distributed with the Uuidm OCaml library.
+        See %%HOMEPAGE%% for contact information."; ]
+  in
+  Term.(const gen $ version $ ns $ name_ $ upper $ binary),
+  Term.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man
+
+let () = match Term.eval cmd with
+| `Error _ -> exit 1
+| _ -> exit 0
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2008 Daniel C. Bünzli

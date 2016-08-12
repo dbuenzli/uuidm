@@ -1,3 +1,4 @@
 <**/*.ml> : bin_annot, annot
 <src> : include
 <test> : include
+<test/uuidtrip.*> : package(cmdliner)
