@@ -1,6 +1,6 @@
 version = "%%VERSION%%"
 description = "Universally unique identifiers (UUIDs)"
-requires = ""
+requires = "bytes"
 archive(byte) = "uuidm.cma"
 archive(native) = "uuidm.cmxa"
 plugin(byte) = "uuidm.cma"
