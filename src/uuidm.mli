@@ -23,14 +23,29 @@
 type t
 (** The type for UUIDs. *)
 
-type version = [
-  | `V3 of t * string (** Name based with MD5 hashing *)
+type version =
+  [ `V3 of t * string (** Name based with MD5 hashing *)
   | `V4 (** Random based *)
   | `V5 of t * string (** Name based with SHA-1 hasing *) ]
 (** The type for UUID versions and generation parameters. [`V3] and [`V5]
     specify a namespace and a name for the generation. [`V4] is random based
     with a private state seeded with [Random.State.make_self_init], use
     {!v4_gen} to specify your own seed. *)
+
+val create : version -> t
+(** [create version] is an UUID of the given [version]. *)
+
+val v3 : t -> string -> t
+(** [v3 ns n] is [create `V3 (ns, n)]. *)
+
+val v5 : t -> string -> t
+(** [v5 ns n] is [create `V5 (ns, n)]. *)
+
+val v4_gen : Random.State.t -> (unit -> t)
+(** [v4 seed] is a function that generates random version 4 UUIDs with
+    the given [seed]. *)
+
+(** {1 Constants} *)
 
 val nil : t
 (** [nil] is the nil UUID. *)
@@ -47,29 +62,20 @@ val ns_oid : t
 val ns_X500 : t
 (** [ns_dn] is the X.500 DN namespace UUID. *)
 
-val create : version -> t
-(** [create version] is an UUID of the given [version]. *)
-
-val v3 : t -> string -> t
-(** [v3 ns n] is [create `V3 (ns, n)]. *)
-
-val v5 : t -> string -> t
-(** [v5 ns n] is [create `V5 (ns, n)]. *)
-
-val v4_gen : Random.State.t -> (unit -> t)
-(** [v4 seed] is a function that generates random version 4 UUIDs with
-    the given [seed]. *)
+(** {1 Comparing} *)
 
 val compare : t -> t -> int
-(** Total order on UUIDs. *)
+(** [compare u u'] totally orders [u] and [u']. *)
 
 val equal : t -> t -> bool
 (** [equal u u'] is [true] iff [u] and [u'] are equal. *)
 
+(** {1 Conversion with UUID binary representation} *)
+
 val of_bytes : ?pos:int -> string -> t option
 (** [of_bytes pos s] is the UUID represented by the 16 bytes starting
-    at [pos] in [s] ([pos] defaults to [0]).  Returns [None] if the
-    string is not long enough. *)
+    at [pos] (defaults to [0]) in [s].  Returns [None] if the string
+    is not long enough. *)
 
 val to_bytes : t -> string
 (** [to_bytes u] is [u] as a 16 bytes long string. *)
@@ -77,6 +83,8 @@ val to_bytes : t -> string
 (**/**)
 val unsafe_to_bytes : t -> string
 (**/**)
+
+(** {1 Conversion with UUID US-ASCII representation} *)
 
 val of_string : ?pos:int -> string -> t option
 (** [of_string pos s] converts the substring of [s] starting at [pos]
@@ -90,8 +98,11 @@ val to_string : ?upper:bool -> t -> string
     a lower case hexadecimal number (or upper if [upper] is
     [true]). *)
 
+(** {1 Pretty-printing} *)
+
 val print : ?upper:bool -> Format.formatter -> t -> unit
-(** See {!to_string}. *)
+(** [print ?upper ppf u] formats [u] on [ppf] like {!to_string} would
+    do. *)
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2008 Daniel C. Bünzli
