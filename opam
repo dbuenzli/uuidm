@@ -4,11 +4,11 @@ homepage: "http://erratique.ch/software/uuidm"
 authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
 doc: "http://erratique.ch/software/uuidm/doc/Uuidm"
 tags: [ "uuid" "codec" "org:erratique" ]
-license: "BSD3"
+license: "ISC"
 depends: ["ocamlfind"]
 ocaml-version: [>= "3.10.0"]
-build: 
+build:
 [
-  ["./pkg/pkg-git" ] 
+  ["./pkg/pkg-git" ]
   ["./pkg/build" "true" ]
 ]
