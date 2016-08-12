@@ -26,9 +26,9 @@ let main () =
   in
   Arg.parse (Arg.align options) (fun _ -> ()) usage;
   let v = !v in
-  let f =
-    if !cstr then fun v -> ignore (Uuidm.to_string (Uuidm.create v)) else
-    fun v -> ignore (Uuidm.create v)
+  let f = match !cstr with
+  | true -> fun version -> ignore (Uuidm.to_string (Uuidm.v version))
+  | false -> fun version -> ignore (Uuidm.v version)
   in
   for i = 1 to !n do f v done
 

@@ -165,10 +165,12 @@ let v4_gen seed =
   let rand = rand seed in
   function () -> v4_uuid rand
 
-let create = function
+let v = function
 | `V4 -> v4_uuid default_rand
 | `V3 (ns, n) -> v3 ns n
 | `V5 (ns, n) -> v5 ns n
+
+let create = v (* deprecated *)
 
 let compare : string -> string -> int = Pervasives.compare
 let equal u u' = compare u u' = 0

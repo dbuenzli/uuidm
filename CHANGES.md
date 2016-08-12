@@ -1,5 +1,6 @@
 
 - Safe-string support. Thanks to Josh Allmann for the help.
+- Deprecate `Uuidm.create` in favor of `Uuidm.v`.
 - Relicensed from BSD3 to ISC.
 - Build depend on topkg.
 - `uuidtrip` uses `Cmdliner` which becomes a depopt of the

@@ -32,8 +32,13 @@ type version =
     with a private state seeded with [Random.State.make_self_init], use
     {!v4_gen} to specify your own seed. *)
 
+val v : version -> t
+(** [v version] is an UUID of the given [version]. *)
+
+(**/**)
+(* Deprecated *)
 val create : version -> t
-(** [create version] is an UUID of the given [version]. *)
+(**/**)
 
 val v3 : t -> string -> t
 (** [v3 ns n] is [create `V3 (ns, n)]. *)

@@ -23,13 +23,13 @@ let main () =
   assert (id_eq Uuidm.ns_url "6bA7b811-9daD-11d1-80b4-00c04fd430c8");
   assert (id_eq Uuidm.ns_oid "6ba7b812-9dad-11d1-80b4-00c04Fd430C8");
   assert (id_eq Uuidm.ns_X500 "6ba7B814-9dad-11d1-80b4-00c04fd430c8");
-  assert (id_eq (Uuidm.create (`V3 (Uuidm.ns_dns, "www.widgets.com")))
+  assert (id_eq (Uuidm.v (`V3 (Uuidm.ns_dns, "www.widgets.com")))
 	    "3D813CBB-47FB-32BA-91DF-831E1593AC29");
-  assert (id_eq (Uuidm.create (`V5 (Uuidm.ns_dns, "www.widgets.com")))
+  assert (id_eq (Uuidm.v (`V5 (Uuidm.ns_dns, "www.widgets.com")))
 	    "21F7F8DE-8051-5B89-8680-0195EF798B6A");
-  assert (id_eq (Uuidm.create (`V3 (Uuidm.ns_dns, "www.example.org")))
+  assert (id_eq (Uuidm.v (`V3 (Uuidm.ns_dns, "www.example.org")))
 	    "0012416f-9eec-3ed4-a8b0-3bceecde1cd9");
-  assert (id_eq (Uuidm.create (`V5 (Uuidm.ns_dns, "www.example.org")))
+  assert (id_eq (Uuidm.v (`V5 (Uuidm.ns_dns, "www.example.org")))
 	    "74738ff5-5367-5958-9aee-98fffdcd1876");
   print_endline "Tests succeeded."
 

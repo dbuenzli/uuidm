@@ -12,7 +12,7 @@ let gen version ns name upper binary =
   | `V4 -> `V4
   | `V5 -> `V5 (ns, name)
   in
-  let u = Uuidm.create version in
+  let u = Uuidm.v version in
   let s = match binary with
   | true -> Uuidm.to_bytes u
   | false -> strf "%s\n" (Uuidm.to_string ~upper u)
