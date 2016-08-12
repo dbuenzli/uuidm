@@ -1,3 +1,5 @@
+v0.9.6 2016-08-12 Zagreb
+------------------------
 
 - Safe-string support. Thanks to Josh Allmann for the help.
 - Deprecate `Uuidm.create` in favor of `Uuidm.v`.
@@ -5,10 +7,10 @@
 - Add `Uuidm.pp`.
 - Relicensed from BSD3 to ISC.
 - Build depend on topkg.
-- `uuidtrip` uses `Cmdliner` which becomes a depopt of the
-  package. The command line interface is unchanged except for long
-  options which have to be written with a double dash and binary
-  output no longer adds an ending newline.
+- `uuidtrip` uses `Cmdliner` which becomes an optional dependency of
+  the package. The command line interface is unchanged except for long
+  options which have to be written with a double dash. Binary output
+  no longer adds an ending newline.
 
 v0.9.5 2012-08-05 Lausanne
 --------------------------
