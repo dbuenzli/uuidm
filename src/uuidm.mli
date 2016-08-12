@@ -105,9 +105,19 @@ val to_string : ?upper:bool -> t -> string
 
 (** {1 Pretty-printing} *)
 
-val print : ?upper:bool -> Format.formatter -> t -> unit
-(** [print ?upper ppf u] formats [u] on [ppf] like {!to_string} would
+val pp : Format.formatter -> t -> unit
+(** [pp ppf u] formats [u] on [ppf] like {!to_string} would do. It is
+    unspecified whether upper or lower case hexadecimal numbers are used. *)
+
+val pp_string : ?upper:bool -> Format.formatter -> t -> unit
+(** [pp_string ?upper ppf u] formats [u] on [ppf] like {!to_string} would
     do. *)
+
+(**/**)
+(* Deprecated *)
+val print : ?upper:bool -> Format.formatter -> t -> unit
+(**/**)
+
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2008 Daniel C. Bünzli

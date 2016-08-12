@@ -238,7 +238,10 @@ let to_string ?(upper = false) u =
   while (!j < 16) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   Bytes.unsafe_to_string s
 
-let print ?upper fmt u = Format.pp_print_string fmt (to_string ?upper u)
+let pp ppf u = Format.pp_print_string ppf (to_string u)
+let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
+
+let print = pp_string (* deprecated *)
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2008 Daniel C. Bünzli
