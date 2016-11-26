@@ -41,10 +41,10 @@ val create : version -> t
 (**/**)
 
 val v3 : t -> string -> t
-(** [v3 ns n] is [create `V3 (ns, n)]. *)
+(** [v3 ns n] is [v `V3 (ns, n)]. *)
 
 val v5 : t -> string -> t
-(** [v5 ns n] is [create `V5 (ns, n)]. *)
+(** [v5 ns n] is [v `V5 (ns, n)]. *)
 
 val v4_gen : Random.State.t -> (unit -> t)
 (** [v4 seed] is a function that generates random version 4 UUIDs with
