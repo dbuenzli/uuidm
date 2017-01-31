@@ -80,7 +80,7 @@ let cmd =
         2005. $(i, http://tools.ietf.org/html/rfc4122)";
     `S "BUGS";
     `P "This program is distributed with the Uuidm OCaml library.
-        See %%HOMEPAGE%% for contact information."; ]
+        See %%PKG_HOMEPAGE%% for contact information."; ]
   in
   Term.(const gen $ version $ ns $ name_ $ upper $ binary),
   Term.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man
