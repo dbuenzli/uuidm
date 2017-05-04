@@ -1,0 +1,27 @@
+{
+  "name": "uuidm",
+  "version": "0.9.6",
+  "description": "Uuidm — Universally unique identifiers (UUIDs) for OCaml",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "bsb -make-world",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbuenzli/uuidm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dbuenzli/uuidm/issues"
+  },
+  "homepage": "https://github.com/dbuenzli/uuidm#readme",
+  "devDependencies": {
+    "bs-platform": "^1.7.3"
+  }
+}
