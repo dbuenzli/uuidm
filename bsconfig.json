@@ -1,0 +1,13 @@
+{
+    "name": "uuidm",
+    "package-specs": [
+        "amdjs",
+        "es6",
+        "commonjs"
+    ],
+    "sources": [
+        {
+            "dir": "src"
+        }
+    ]
+}
