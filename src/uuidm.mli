@@ -86,6 +86,7 @@ val to_bytes : t -> string
 (** [to_bytes u] is [u] as a 16 bytes long string. *)
 
 (**/**)
+val unsafe_of_bytes : string -> t
 val unsafe_to_bytes : t -> string
 (**/**)
 

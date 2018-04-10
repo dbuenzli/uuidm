@@ -1,3 +1,7 @@
+
+
+- Add `Uuidm.unsafe_of_bytes`
+
 v0.9.6 2016-08-12 Zagreb
 ------------------------
 

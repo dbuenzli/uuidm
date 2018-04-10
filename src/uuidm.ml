@@ -181,6 +181,8 @@ let of_bytes ?(pos = 0) s =
   Some (String.sub s pos 16)
 
 let to_bytes s = s
+
+let unsafe_of_bytes u = u
 let unsafe_to_bytes u = u
 
 let of_string ?(pos = 0) s =
