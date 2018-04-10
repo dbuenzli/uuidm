@@ -23,6 +23,11 @@ let main () =
   assert (id_eq Uuidm.ns_url "6bA7b811-9daD-11d1-80b4-00c04fd430c8");
   assert (id_eq Uuidm.ns_oid "6ba7b812-9dad-11d1-80b4-00c04Fd430C8");
   assert (id_eq Uuidm.ns_X500 "6ba7B814-9dad-11d1-80b4-00c04fd430c8");
+  assert (id_eq Uuidm.(unsafe_of_bytes @@ to_mixed_endian_bytes ns_X500)
+            "14B8a76b-ad9d-d111-80b4-00c04fd430c8");
+  assert (match Uuidm.(of_mixed_endian_bytes (to_bytes ns_X500)) with
+    | None -> assert false
+    | Some id -> id_eq id "14B8a76b-ad9d-d111-80b4-00c04fd430c8");
   assert (id_eq (Uuidm.v (`V3 (Uuidm.ns_dns, "www.widgets.com")))
 	    "3D813CBB-47FB-32BA-91DF-831E1593AC29");
   assert (id_eq (Uuidm.v (`V5 (Uuidm.ns_dns, "www.widgets.com")))

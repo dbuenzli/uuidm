@@ -75,7 +75,7 @@ val compare : t -> t -> int
 val equal : t -> t -> bool
 (** [equal u u'] is [true] iff [u] and [u'] are equal. *)
 
-(** {1 Conversion with UUID binary representation} *)
+(** {1 Conversion with standard UUID binary representation} *)
 
 val of_bytes : ?pos:int -> string -> t option
 (** [of_bytes pos s] is the UUID represented by the 16 bytes starting
@@ -84,6 +84,20 @@ val of_bytes : ?pos:int -> string -> t option
 
 val to_bytes : t -> string
 (** [to_bytes u] is [u] as a 16 bytes long string. *)
+
+(** {1 Conversion with mixed-endian UUID binary representation}
+
+    In this representation the three first fields of UUIDs (which are
+    opaque to this module) are read and written in little-endian. This
+    corresponds to how UEFI or Microsoft serialize UUIDs. *)
+
+val of_mixed_endian_bytes : ?pos:int -> string -> t option
+(** [of_mixed_endian_bytes] is like {!of_bytes} but converts
+    from the mixed endian representation. *)
+
+val to_mixed_endian_bytes : t -> string
+(** [to_mixed_endian_bytes] is like {!to_bytes} but converts
+    to the mixed endian representation. *)
 
 (**/**)
 val unsafe_of_bytes : string -> t

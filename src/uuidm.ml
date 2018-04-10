@@ -175,12 +175,28 @@ let create = v (* deprecated *)
 let compare : string -> string -> int = Pervasives.compare
 let equal u u' = compare u u' = 0
 
+let to_bytes s = s
 let of_bytes ?(pos = 0) s =
   let len = String.length s in
   if pos + 16 > len then None else
+  if pos = 0 && len = 16 then Some s else
   Some (String.sub s pos 16)
 
-let to_bytes s = s
+let mixed_swaps s =
+  let swap b i j =
+    let t = Bytes.get b i in
+    Bytes.set b i (Bytes.get b j);
+    Bytes.set b j t
+  in
+  let b = Bytes.of_string s in
+  swap b 0 3; swap b 1 2;
+  swap b 4 5; swap b 6 7;
+  Bytes.unsafe_to_string b
+
+let to_mixed_endian_bytes s = mixed_swaps s
+let of_mixed_endian_bytes ?pos s = match of_bytes ?pos s with
+| None -> None
+| Some s -> Some (mixed_swaps s)
 
 let unsafe_of_bytes u = u
 let unsafe_to_bytes u = u
