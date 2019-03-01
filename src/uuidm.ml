@@ -165,6 +165,14 @@ let v4_gen seed =
   let rand = rand seed in
   function () -> v4_uuid rand
 
+let v4 b =
+  let u = Bytes.sub b 0 16 in
+  let b6 = 0b0100_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
+  let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
+  Bytes.set u 6 (Char.unsafe_chr b6);
+  Bytes.set u 8 (Char.unsafe_chr b8);
+  Bytes.unsafe_to_string u
+
 let v = function
 | `V4 -> v4_uuid default_rand
 | `V3 (ns, n) -> v3 ns n

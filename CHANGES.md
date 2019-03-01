@@ -1,4 +1,7 @@
 
+- Add `Uuidm.v4`, creates random based V4 UUID using client provided
+  random bytes (#8). Thanks to François-René Rideau for suggesting and
+  David Kaloper Meršinjak for additional comments.
 - Add `Uuidm.{to,of}_mixed_endian_bytes`.
 - Add `Uuidm.unsafe_of_bytes`
 
