@@ -4,23 +4,9 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-type t = string                                     (* 16 bytes long strings *)
-type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
-
-let nil = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-let ns_dns = "\x6b\xa7\xb8\x10\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
-let ns_url = "\x6b\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
-let ns_oid = "\x6b\xa7\xb8\x12\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
-let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
-
-let rand s = fun () -> Random.State.bits s      (* 30 random bits generator. *)
-let default_rand = rand (Random.State.make_self_init ())
-
 let md5 = Digest.string
-
-(* sha-1 digest. Based on pseudo-code of RFC 3174.
-   Slow and ugly but does the job. *)
 let sha_1 s =
+  (* Based on pseudo-code of RFC 3174. Slow and ugly but does the job. *)
   let sha_1_pad s =
     let len = String.length s in
     let blen = 8 * len in
@@ -123,6 +109,10 @@ let sha_1 s =
   i2s h 16 !h4;
   Bytes.unsafe_to_string h
 
+(* Uuids *)
+
+type t = string (* 16 bytes long strings *)
+
 let msg_uuid v digest ns n =
   let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in
   Bytes.set u 6 @@ Char.unsafe_chr
@@ -133,8 +123,17 @@ let msg_uuid v digest ns n =
 
 let v3 ns n = msg_uuid 3 md5 ns n
 let v5 ns n = msg_uuid 5 sha_1 ns n
+let v4 b =
+  let u = Bytes.sub b 0 16 in
+  let b6 = 0b0100_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
+  let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
+  Bytes.set u 6 (Char.unsafe_chr b6);
+  Bytes.set u 8 (Char.unsafe_chr b8);
+  Bytes.unsafe_to_string u
 
-let v4_uuid rand =
+let rand s = fun () -> Random.State.bits s (* 30 random bits generator. *)
+let default_rand = rand (Random.State.make_self_init ())
+let v4_ocaml_random_uuid rand =
   let r0 = rand () in
   let r1 = rand () in
   let r2 = rand () in
@@ -163,25 +162,30 @@ let v4_uuid rand =
 
 let v4_gen seed =
   let rand = rand seed in
-  function () -> v4_uuid rand
+  function () -> v4_ocaml_random_uuid rand
 
-let v4 b =
-  let u = Bytes.sub b 0 16 in
-  let b6 = 0b0100_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
-  let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
-  Bytes.set u 6 (Char.unsafe_chr b6);
-  Bytes.set u 8 (Char.unsafe_chr b8);
-  Bytes.unsafe_to_string u
-
+type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
 let v = function
-| `V4 -> v4_uuid default_rand
+| `V4 -> v4_ocaml_random_uuid default_rand
 | `V3 (ns, n) -> v3 ns n
 | `V5 (ns, n) -> v5 ns n
 
 let create = v (* deprecated *)
 
+(* Constants *)
+
+let nil = "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+let ns_dns = "\x6b\xa7\xb8\x10\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
+let ns_url = "\x6b\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
+let ns_oid = "\x6b\xa7\xb8\x12\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
+let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
+
+(* Comparing *)
+
+let equal u u' = (compare : string -> string -> int) u u' = 0
 let compare : string -> string -> int = Pervasives.compare
-let equal u u' = compare u u' = 0
+
+(* Standard binary format *)
 
 let to_bytes s = s
 let of_bytes ?(pos = 0) s =
@@ -189,6 +193,8 @@ let of_bytes ?(pos = 0) s =
   if pos + 16 > len then None else
   if pos = 0 && len = 16 then Some s else
   Some (String.sub s pos 16)
+
+(* Mixed endian binary format *)
 
 let mixed_swaps s =
   let swap b i j =
@@ -206,8 +212,12 @@ let of_mixed_endian_bytes ?pos s = match of_bytes ?pos s with
 | None -> None
 | Some s -> Some (mixed_swaps s)
 
+(* Unsafe conversions *)
+
 let unsafe_of_bytes u = u
 let unsafe_to_bytes u = u
+
+(* US-ASCII format *)
 
 let of_string ?(pos = 0) s =
   let len = String.length s in
@@ -264,9 +274,10 @@ let to_string ?(upper = false) u =
   while (!j < 16) do byte s !i (Char.code u.[!j]); i := !i + 2; incr j; done;
   Bytes.unsafe_to_string s
 
+(* Pretty-printing *)
+
 let pp ppf u = Format.pp_print_string ppf (to_string u)
 let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
-
 let print = pp_string (* deprecated *)
 
 (*---------------------------------------------------------------------------
