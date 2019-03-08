@@ -1,3 +1,5 @@
+v0.9.7 2019-03-08 La Forclaz (VS)
+---------------------------------
 
 - Add `Uuidm.v4`, creates random based V4 UUID using client provided
   random bytes (#8). Thanks to François-René Rideau for suggesting and
