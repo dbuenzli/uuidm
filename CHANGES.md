@@ -1,3 +1,8 @@
+
+- Add deprecation warnings on what is already deprecated.
+- Require OCaml 4.08 and support 5.00 (Thanks to Kate @ki-ty-kate
+  for the patch).
+
 v0.9.7 2019-03-08 La Forclaz (VS)
 ---------------------------------
 
