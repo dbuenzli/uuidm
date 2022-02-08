@@ -2,7 +2,8 @@
 
 Uuidm is an OCaml module implementing 128 bits universally unique
 identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
-(random based) according to [RFC 4122][rfc4122].
+(random based) according to {{:http://tools.ietf.org/html/rfc4122}
+RFC 4122}.
 
 {!modules:
 Uuidm
