@@ -1,4 +1,4 @@
-Copyright (c) 2008 Daniel C. Bünzli
+Copyright (c) 2008 The uuidm programmers
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

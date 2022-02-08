@@ -1,5 +1,5 @@
 (*---------------------------------------------------------------------------
-   Copyright (c) 2008 Daniel C. Bünzli. All rights reserved.
+   Copyright (c) 2008 The uuidm programmers. All rights reserved.
    Distributed under the ISC license, see terms at the end of the file.
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
@@ -155,7 +155,7 @@ val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)
 (**/**)
 
 (*---------------------------------------------------------------------------
-   Copyright (c) 2008 Daniel C. Bünzli
+   Copyright (c) 2008 The uuidm programmers
 
    Permission to use, copy, modify, and/or distribute this software for any
    purpose with or without fee is hereby granted, provided that the above
