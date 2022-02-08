@@ -64,10 +64,6 @@ type version =
 val v : version -> t
 (** [v version] is an UUID of the given [version]. *)
 
-(**/**)
-val create : version -> t (* deprecated *)
-(**/**)
-
 (** {1:constants Constants} *)
 
 val nil : t
@@ -151,6 +147,10 @@ val pp_string : ?upper:bool -> Format.formatter -> t -> unit
 
 (**/**)
 val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)
+[@@ocaml.deprecated "Use Uuidm.pp_string instead"]
+
+val create : version -> t (* deprecated *)
+[@@ocaml.deprecated "Use Uuidm.v instead"]
 (**/**)
 
 (*---------------------------------------------------------------------------
