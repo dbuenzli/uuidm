@@ -183,7 +183,7 @@ let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 (* Comparing *)
 
 let equal u u' = (compare : string -> string -> int) u u' = 0
-let compare : string -> string -> int = Pervasives.compare
+let compare : string -> string -> int = Stdlib.compare
 
 (* Standard binary format *)
 
