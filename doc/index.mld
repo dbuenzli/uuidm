@@ -1,0 +1,9 @@
+{0 Uuidm {%html: <span class="version">%%VERSION%%</span>%}}
+
+Uuidm is an OCaml module implementing 128 bits universally unique
+identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
+(random based) according to [RFC 4122][rfc4122].
+
+{!modules:
+Uuidm
+}

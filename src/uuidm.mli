@@ -10,13 +10,11 @@
     3, 5 (name based with MD5, SHA-1 hashing) and 4 (random based)
     according to {{:http://tools.ietf.org/html/rfc4122}RFC 4122}.
 
-    {3 References}
+    {b References}
     {ul
     {- P. Leach et al.
     {e {{:http://tools.ietf.org/html/rfc4122}A universally unique identifier
-     (UUID) URN Namespace}}, 2005.}}
-
-    {e %%VERSION%% - {{:%%PKG_HOMEPAGE%% }homepage}} *)
+     (UUID) URN Namespace}}, 2005.}} *)
 
 (** {1:uuids UUIDs} *)
 
