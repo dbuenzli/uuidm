@@ -82,12 +82,11 @@ let cmd =
     `P "This program is distributed with the Uuidm OCaml library.
         See %%PKG_HOMEPAGE%% for contact information."; ]
   in
-  Term.(const gen $ version $ ns $ name_ $ upper $ binary),
-  Term.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man
+  Cmd.v (Cmd.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man)
+    Term.(const gen $ version $ ns $ name_ $ upper $ binary)
 
-let () = match Term.eval cmd with
-| `Error _ -> exit 1
-| _ -> exit 0
+
+let () = exit (Cmd.eval cmd)
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2008 Daniel C. Bünzli

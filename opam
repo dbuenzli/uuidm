@@ -13,6 +13,7 @@ depends: [
   "ocamlbuild" {build}
   "topkg" {build} ]
 depopts: [ "cmdliner" ]
+conflicts: [ "cmdliner" {< "1.1.0"} ]
 build:
 [  "ocaml" "pkg/pkg.ml" "build"
            "--pinned" "%{pinned}%"
