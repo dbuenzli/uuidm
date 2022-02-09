@@ -1,7 +1,10 @@
+v0.9.8 2022-02-09 La Forclaz (VS)
+---------------------------------
 
 - Add deprecation warnings on what is already deprecated.
 - Require OCaml 4.08 and support 5.00 (Thanks to Kate @ki-ty-kate
   for the patch).
+
 
 v0.9.7 2019-03-08 La Forclaz (VS)
 ---------------------------------
@@ -11,6 +14,7 @@ v0.9.7 2019-03-08 La Forclaz (VS)
   David Kaloper Meršinjak for additional comments.
 - Add `Uuidm.{to,of}_mixed_endian_bytes`. Support for UEFI and
   Microsoft's binary serialization of UUIDs.
+
 
 v0.9.6 2016-08-12 Zagreb
 ------------------------
@@ -25,6 +29,7 @@ v0.9.6 2016-08-12 Zagreb
   the package. The command line interface is unchanged except for long
   options which have to be written with a double dash. Binary output
   no longer adds an ending newline.
+
 
 v0.9.5 2012-08-05 Lausanne
 --------------------------
