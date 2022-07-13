@@ -128,7 +128,8 @@ val of_string : ?pos:int -> string -> t option
 (** [of_string pos s] converts the substring of [s] starting at [pos]
     (defaults to [0]) of the form ["XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"]
     where X is a lower or upper case hexadecimal number to an
-    UUID. The result is [None] if a parse error occurs.  *)
+    UUID. The result is [None] if a parse error occurs. Any extra
+    characters after are ignored. *)
 
 val to_string : ?upper:bool -> t -> string
 (** [to_string u] is [u] as a string of the form
