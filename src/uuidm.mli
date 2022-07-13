@@ -122,7 +122,7 @@ val unsafe_of_bytes : string -> t
 val unsafe_to_bytes : t -> string
 (**/**)
 
-(** {1:fmt_ascsii US-ASCII format} *)
+(** {1:fmt_ascii US-ASCII format} *)
 
 val of_string : ?pos:int -> string -> t option
 (** [of_string pos s] converts the substring of [s] starting at [pos]
