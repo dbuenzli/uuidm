@@ -163,6 +163,28 @@ let v4_gen seed =
   let rand = rand seed in
   function () -> v4_ocaml_random_uuid rand
 
+let v7 =
+  let open Int64 in
+  let ns_in_ms = 1_000_000L in
+  let sub_ms_frac_multiplier = unsigned_div minus_one ns_in_ms in
+  fun ts b ->
+    let u = Bytes.create 16 in
+    Bytes.blit b 0 u 8 8;
+    (* RFC9562 requires we use 48 bits for a timestamp in milliseconds, and
+       allows for 12 bits to store a sub-millisecond fraction. We get the
+       latter by multiplying to put the fraction in a 64-bit range, then
+       shifting into 12 bits. *)
+    let ms = unsigned_div ts ns_in_ms in
+    let ns = unsigned_rem ts ns_in_ms in
+    let sub_ms_frac = shift_right_logical (mul ns sub_ms_frac_multiplier) 52 in
+    Bytes.set_int64_be u 0 (shift_left ms 16);
+    Bytes.set_int16_be u 6 (to_int sub_ms_frac);
+    let b6 = 0b0111_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
+    let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
+    Bytes.set u 6 (Char.unsafe_chr b6);
+    Bytes.set u 8 (Char.unsafe_chr b8);
+    Bytes.unsafe_to_string u
+
 type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
 let v = function
 | `V4 -> v4_ocaml_random_uuid default_rand

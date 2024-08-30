@@ -36,6 +36,10 @@ let main () =
 	    "0012416f-9eec-3ed4-a8b0-3bceecde1cd9");
   assert (id_eq (Uuidm.v (`V5 (Uuidm.ns_dns, "www.example.org")))
 	    "74738ff5-5367-5958-9aee-98fffdcd1876");
+  assert (id_eq (Uuidm.v7 Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
+                          (Bytes.of_string "\x12\x34\x56\x78\
+                                            \x9a\xbc\xde\xf0"))
+                "10203040-5060-7369-9234-56789abcdef0");
   print_endline "Tests succeeded."
 
 let () = main ()
