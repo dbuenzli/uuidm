@@ -2,6 +2,7 @@ open B0_kit.V000
 
 (* OCaml library names *)
 
+let b0_std = B0_ocaml.libname "b0.std"
 let cmdliner = B0_ocaml.libname "cmdliner"
 let uuidm = B0_ocaml.libname "uuidm"
 
@@ -11,15 +12,14 @@ let uuidm_lib = B0_ocaml.lib uuidm ~srcs:[`Dir ~/"src"]
 
 (* Tests *)
 
-let test_exe src ~doc =
-  let src = Fpath.v src in
-  let srcs = Fpath.[`File src] in
-  let meta = B0_meta.(empty |> tag test) in
-  let requires = [ uuidm ] in
-  B0_ocaml.exe (Fpath.basename ~strip_ext:true src) ~srcs ~doc ~meta ~requires
+let test ?(requires = []) = B0_ocaml.test ~requires:(uuidm :: requires)
+let perf = test ~/"test/perf.ml" ~run:false ~doc:"Test Uuidm performance"
+let examples = test ~/"test/examples.ml" ~run:false ~doc:"Sample code"
+let test_uuidm =
+  test ~/"test/test_uuidm.ml" ~requires:[b0_std] ~doc:"Test Uuuidm"
 
-let test = test_exe "test/test.ml" ~doc:"Test suite"
-let perf = test_exe "test/perf.ml" ~doc:"Test performance"
+
+(* Tools *)
 
 let uuidtrip =
   let doc = "Generates universally unique identifiers (UUIDs)" in

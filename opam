@@ -2,15 +2,16 @@ opam-version: "2.0"
 name: "uuidm"
 synopsis: "Universally unique identifiers (UUIDs) for OCaml"
 description: """\
-Uuidm is an OCaml module implementing 128 bits universally unique
-identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
-(random based) according to [RFC 4122][rfc4122].
+Uuidm is an OCaml library implementing 128 bits universally unique
+identifiers version 3, 5 (named based with MD5, SHA-1 hashing), 4
+(random based) and 7 (time and random based) according to [RFC
+9562][rfc9562].
 
 Uuidm has no dependency and is distributed under the ISC license.
 
-[rfc4122]: http://tools.ietf.org/html/rfc4122
+[rfc9562]: http://tools.ietf.org/html/rfc9562
 
-Homepage: <http://erratique.ch/software/uuidm>"""
+Homepage: <https://erratique.ch/software/uuidm>"""
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
 authors: "The uuidm programmers"
 license: "ISC"

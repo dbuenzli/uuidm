@@ -2,9 +2,69 @@
 
 Uuidm is an OCaml module implementing 128 bits universally unique
 identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
-(random based) according to {{:http://tools.ietf.org/html/rfc4122}
+(random based) according to {{:https://www.rfc-editor.org/rfc/rfc9562}
 RFC 4122}.
+
+See the {{!quick}quick start}.
+
+{1:uuidm_lib Library [uuidm]}
 
 {!modules:
 Uuidm
 }
+
+{1:quick Quick start}
+
+{2:random Random UUID}
+
+The [uuid] is a function to use in your program to generate V4 random
+UUIDs.
+
+{[
+let uuid = Uuidm.v4_gen (Random.State.make_self_init ())
+let () = print_endline (Uuidm.to_string (uuid ()))
+let () = print_endline (Uuidm.to_string (uuid ()))
+]}
+
+{2:namespace Namespaced UUIDs}
+
+Namespaced V5 UUIDs can be used to generate [urn:uuid] URIs for your
+atom {{:https://www.rfc-editor.org/rfc/rfc4287#section-4.2.6}feed and
+entry IDs} to minimize the chances of feed replays.
+
+The idea is to generate a random V4 UUID for your feed. For example with
+the code above or with:
+{@shell[
+> uuidtrip
+6228c5f9-7069-4519-9bf4-0b6e865f4c42
+]}
+
+This UUID which you need to store preciously is used to generate
+your atom feed ID:
+
+{[
+let feed_id ~feed_id = "urn:uuid:" ^ (Uuid.to_string feed_id)
+]}
+
+The feed UUID is used as a V5 namespace and the
+{{:https://www.rfc-editor.org/rfc/rfc3339}RFC
+3339} publication date of an entry as the data to hash for defining the
+entry's IDs:
+
+{[
+let entry_id ~feed_id ~rfc3339_stamp =
+    "urn:uuid:" ^ (Uuidm.to_string (Uuidm.v5 feed_id rfc3339_stamp))
+]}
+
+This assumes that
+
+{ol
+{- You do not publish two entries at exactly the same time. RFC 3339 has
+   enough time granularity to ensure that.}
+{- You do not change your publication dates. In atom they must in fact
+   not change, updates to entries must be specified
+   in {{:https://www.rfc-editor.org/rfc/rfc4287#section-4.2.15}[atom:updated]}.}
+{- If you store publication dates as a POSIX timestamp be careful
+   to render them to RFC 3339 with a fixed time zone. Alternatively
+   you can directly use the decimal representation of the timestamp
+   as the data to hash.}}

@@ -7,17 +7,10 @@
 
     [Uuidm] implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing) 4, (random based) and 7 (random
-    and timestamp based) according to {{:http://tools.ietf.org/html/rfc9562}RFC 9562}
+    and timestamp based) according to
+    {{:http://tools.ietf.org/html/rfc9562}RFC 9562}.
 
-    {b References}
-    {ul
-    {- P. Leach et al.
-    {e {{:http://tools.ietf.org/html/rfc4122}A universally unique identifier
-     (UUID) URN Namespace}}, 2005.}}
-    {- K. Davis et al.
-    {e {{:http://tools.ietf.org/html/rfc9562}Universally unique identifiers
-     (UUIDs)}}, 2024.}}
-*)
+    See the {{!page-index.quick}quick start}. *)
 
 (** {1:uuids UUIDs} *)
 
