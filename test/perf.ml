@@ -25,10 +25,14 @@ let main () =
     " SHA-1 name based UUID version 5"; ]
   in
   Arg.parse (Arg.align options) (fun _ -> ()) usage;
-  let v = !v in
+  let uuid = match !v with
+  | `V4 -> Uuidm.v4_gen (Random.State.make_self_init ())
+  | `V3 (ns, n) -> fun () -> Uuidm.v3 ns n
+  | `V5 (ns, n) -> fun () -> Uuidm.v5 ns n
+  in
   let f = match !cstr with
-  | true -> fun version -> ignore (Uuidm.to_string (Uuidm.v version))
-  | false -> fun version -> ignore (Uuidm.v version)
+  | true -> fun version -> ignore (Uuidm.to_string (uuid ()))
+  | false -> fun version -> ignore (uuid ())
   in
   for i = 1 to !n do f v done
 

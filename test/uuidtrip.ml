@@ -6,16 +6,16 @@
 let strf = Printf.sprintf
 
 let gen version ns name upper binary =
-  let version = match version with
-  | `V3 -> `V3 (ns, name)
-  | `V4 -> `V4
-  | `V5 -> `V5 (ns, name)
+  let u = match version with
+  | `V3 -> Uuidm.v3 ns name
+  | `V4 -> Uuidm.v4_gen (Random.State.make_self_init ()) ()
+  | `V5 -> Uuidm.v5 ns name
   in
-  let u = Uuidm.v version in
   let s = match binary with
   | true -> Uuidm.to_bytes u
   | false -> strf "%s\n" (Uuidm.to_string ~upper u)
   in
+  let () = Out_channel.set_binary_mode stdout binary in
   print_string s; flush stdout
 
 (* Command line interface *)
@@ -81,8 +81,9 @@ let cmd =
     `P "This program is distributed with the Uuidm OCaml library.
         See %%PKG_HOMEPAGE%% for contact information."; ]
   in
-  Cmd.v (Cmd.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man)
-    Term.(const gen $ version $ ns $ name_ $ upper $ binary)
+  Cmd.v (Cmd.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man) @@
+  Term.(const gen $ version $ ns $ name_ $ upper $ binary)
 
+let main () = Cmd.eval cmd
 
-let () = exit (Cmd.eval cmd)
+let () = if !Sys.interactive then () else exit (main ())

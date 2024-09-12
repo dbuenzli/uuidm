@@ -131,7 +131,6 @@ let v4 b =
   Bytes.unsafe_to_string u
 
 let rand s = fun () -> Random.State.bits s (* 30 random bits generator. *)
-let default_rand = rand (Random.State.make_self_init ())
 let v4_ocaml_random_uuid rand =
   let r0 = rand () in
   let r1 = rand () in
@@ -184,14 +183,6 @@ let v7 =
     Bytes.set u 6 (Char.unsafe_chr b6);
     Bytes.set u 8 (Char.unsafe_chr b8);
     Bytes.unsafe_to_string u
-
-type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
-let v = function
-| `V4 -> v4_ocaml_random_uuid default_rand
-| `V3 (ns, n) -> v3 ns n
-| `V5 (ns, n) -> v5 ns n
-
-let create = v (* deprecated *)
 
 (* Constants *)
 
@@ -299,4 +290,16 @@ let to_string ?(upper = false) u =
 
 let pp ppf u = Format.pp_print_string ppf (to_string u)
 let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
+
+(* Deprecated *)
+
+let default_rand = rand (Random.State.make_self_init ())
+
+type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
+let v = function
+| `V4 -> v4_ocaml_random_uuid default_rand
+| `V3 (ns, n) -> v3 ns n
+| `V5 (ns, n) -> v5 ns n
+
+let create = v (* deprecated *)
 let print = pp_string (* deprecated *)

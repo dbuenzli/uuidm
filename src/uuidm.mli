@@ -47,29 +47,6 @@ val v7 : int64 -> bytes -> t
     Be aware that [ts] is interpreted as unsigned, and that most of the 64
     bits taken from [b] are seen literally in the result. *)
 
-(** {2:informally_deprecated Informally deprecated}
-
-    This interface is informally deprecated: it seems many people are
-    using [Uuidm.v `V4] in practice. For new code prefer one of the
-    creation functions above. *)
-
-type version =
-[ `V3 of t * string (** Name based with MD5 hashing *)
-| `V4 (** Random based *)
-| `V5 of t * string (** Name based with SHA-1 hasing *) ]
-(** The type for UUID versions and generation parameters.
-    {ul
-    {- [`V3] and [`V5] specify a namespace and a name for the generation.}
-    {- [`V4] is random based with a private state seeded with
-       {!Stdlib.Random.State.make_self_init}. Use {!v4_gen} to specify
-       your own seed. Use {!v4} to specify your own randomness.
-
-       {b Warning.} The sequence resulting from repeatedly calling
-       [v `V4] is random but predictable see {!v4_gen}.}} *)
-
-val v : version -> t
-(** [v version] is an UUID of the given [version]. *)
-
 (** {1:constants Constants} *)
 
 val nil : t
@@ -141,7 +118,7 @@ val to_string : ?upper:bool -> t -> string
     ["XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"] where X is a lower
     (or upper if [upper] is [true]) case hexadecimal number. *)
 
-(** {1:pp Pretty-printing} *)
+(** {1:fmt Formatting} *)
 
 val pp : Format.formatter -> t -> unit
 (** [pp ppf u] formats a representation based on {!to_string}
@@ -151,10 +128,32 @@ val pp_string : ?upper:bool -> Format.formatter -> t -> unit
 (** [pp_string ?upper ppf u] formats [u] on [ppf] like {!to_string} would
     do. *)
 
+(** {1:deprecated Deprecated} *)
+
+type version =
+[ `V3 of t * string (** Name based with MD5 hashing *)
+| `V4 (** Random based *)
+| `V5 of t * string (** Name based with SHA-1 hasing *) ]
+[@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
+(** The type for UUID versions and generation parameters.
+    {ul
+    {- [`V3] and [`V5] specify a namespace and a name for the generation.}
+    {- [`V4] is random based with a private state seeded with
+       {!Stdlib.Random.State.make_self_init}. Use {!v4_gen} to specify
+       your own seed. Use {!v4} to specify your own randomness.
+
+       {b Warning.} The sequence resulting from repeatedly calling
+       [v `V4] is random but predictable see {!v4_gen}.}} *)
+
+val v : version -> t
+[@@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
+[@@ocaml.warning "-3"]
+
 (**/**)
 val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)
 [@@ocaml.deprecated "Use Uuidm.pp_string instead"]
 
 val create : version -> t (* deprecated *)
 [@@ocaml.deprecated "Use Uuidm.v instead"]
+[@@ocaml.warning "-3"]
 (**/**)

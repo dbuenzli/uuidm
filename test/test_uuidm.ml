@@ -39,10 +39,10 @@ let test_gen () =
     (Uuidm.v5 Uuidm.ns_dns "www.widgets.com")
 	  "21F7F8DE-8051-5B89-8680-0195EF798B6A";
   test_id ~__POS__
-    (Uuidm.v (`V3 (Uuidm.ns_dns, "www.example.org")))
+    (Uuidm.v3 Uuidm.ns_dns "www.example.org")
 	  "0012416f-9eec-3ed4-a8b0-3bceecde1cd9";
   test_id ~__POS__
-    (Uuidm.v (`V5 (Uuidm.ns_dns, "www.example.org")))
+    (Uuidm.v5 Uuidm.ns_dns "www.example.org")
 	  "74738ff5-5367-5958-9aee-98fffdcd1876";
   test_id ~__POS__
     (Uuidm.v7 Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)

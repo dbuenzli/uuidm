@@ -2,6 +2,12 @@
 - Add `Uuidm.v7`, create time and random based V7 UUIDs using
   client provided random bytes and time. Thanks to Robin 
   Newton for the patch (#14).
+  
+- Formally deprecate the "informally" deprecated `Uuidm.v` function and 
+  the `Uuidm.version` type.
+
+- `uuidtrip` set standard output to binary when outputing 
+  binary uuids. 
 
 v0.9.8 2022-02-09 La Forclaz (VS)
 ---------------------------------
