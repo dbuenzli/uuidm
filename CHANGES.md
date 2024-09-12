@@ -2,10 +2,9 @@
 - Add `Uuidm.v7`, create time and random based V7 UUIDs using
   client provided random bytes and time. Thanks to Robin 
   Newton for the patch (#14).
-  
+- Add `Uuidm.max` the RFC 9569 Max UUID.
 - Formally deprecate the "informally" deprecated `Uuidm.v` function and 
   the `Uuidm.version` type.
-
 - `uuidtrip` set standard output to binary when outputing 
   binary uuids. 
 

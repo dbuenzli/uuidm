@@ -18,7 +18,7 @@ Uuidm
 {2:random Random V4 UUIDs}
 
 The [uuid] is a function to use in your program to generate V4 random
-UUIDs (read {{!Uuidm.v4_gen}the warning} though).
+UUIDs. Read {{!Uuidm.v4_gen}the warning} though.
 
 {[
 let uuid = Uuidm.v4_gen (Random.State.make_self_init ())

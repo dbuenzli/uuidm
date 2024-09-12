@@ -12,8 +12,10 @@ let test_id ?__POS__ u us =
   Test.eq ?__POS__ (module Uuidm) u us;
   ()
 
-let test_namespace_constants () =
-  Test.test "Uuidm.ns_*" @@ fun () ->
+let test_constants () =
+  Test.test "Uuidm UUID constants" @@ fun () ->
+  test_id ~__POS__ Uuidm.nil     "00000000-0000-0000-0000-000000000000";
+  test_id ~__POS__ Uuidm.max     "ffffffff-ffff-ffff-ffff-ffffffffffff";
   test_id ~__POS__ Uuidm.ns_dns  "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
   test_id ~__POS__ Uuidm.ns_url  "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
   test_id ~__POS__ Uuidm.ns_oid  "6ba7b812-9dad-11d1-80b4-00c04fd430c8";
@@ -53,7 +55,7 @@ let test_gen () =
 
 let main () =
   Test.main @@ fun () ->
-  test_namespace_constants ();
+  test_constants ();
   test_mixed_endian ();
   test_gen ();
   ()

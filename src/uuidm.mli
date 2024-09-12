@@ -54,7 +54,12 @@ val v7 : int64 -> bytes -> t
 (** {1:constants Constants} *)
 
 val nil : t
-(** [nil] is the nil UUID. *)
+(** [nil] is the
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-nil-uuid}nil} UUID. *)
+
+val max : t
+(** [max] is the {{:https://www.rfc-editor.org/rfc/rfc9562#name-max-uuid}max}
+    UUID. *)
 
 val ns_dns : t
 (** [ns_dns] is the DNS namespace UUID. *)
@@ -74,7 +79,7 @@ val equal : t -> t -> bool
 (** [equal u u'] is [true] iff [u] and [u'] are equal. *)
 
 val compare : t -> t -> int
-(** [compare u u'] totally orders [u] and [u']. *)
+(** [compare] is the total binary order on UUIDs. *)
 
 (** {1:fmt_binary Standard binary format}
 
