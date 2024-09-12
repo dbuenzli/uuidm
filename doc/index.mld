@@ -3,7 +3,7 @@
 Uuidm is an OCaml module implementing 128 bits universally unique
 identifiers version 3, 5 (named based with MD5, SHA-1 hashing) and 4
 (random based) according to {{:https://www.rfc-editor.org/rfc/rfc9562}
-RFC 4122}.
+RFC 9562}.
 
 See the {{!quick}quick start}.
 
@@ -15,10 +15,10 @@ Uuidm
 
 {1:quick Quick start}
 
-{2:random Random UUID}
+{2:random Random V4 UUIDs}
 
 The [uuid] is a function to use in your program to generate V4 random
-UUIDs.
+UUIDs (read {{!Uuidm.v4_gen}the warning} though).
 
 {[
 let uuid = Uuidm.v4_gen (Random.State.make_self_init ())
@@ -26,7 +26,7 @@ let () = print_endline (Uuidm.to_string (uuid ()))
 let () = print_endline (Uuidm.to_string (uuid ()))
 ]}
 
-{2:namespace Namespaced UUIDs}
+{2:namespace Namespaced V5 UUIDs}
 
 Namespaced V5 UUIDs can be used to generate [urn:uuid] URIs for your
 atom {{:https://www.rfc-editor.org/rfc/rfc4287#section-4.2.6}feed and
