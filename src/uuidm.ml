@@ -34,7 +34,6 @@ let sha_1 s =
   let ( land ) = Int32.logand in
   let ( ++ ) = Int32.add in
   let lnot = Int32.lognot in
-  let sr = Int32.shift_right in
   let sl = Int32.shift_left in
   let cls n x = (sl x n) lor (Int32.shift_right_logical x (32 - n)) in
   (* Start *)
@@ -53,13 +52,7 @@ let sha_1 s =
   for i = 0 to ((Bytes.length m) / 64) - 1 do              (* For each block *)
     (* Fill w *)
     let base = i * 64 in
-    for j = 0 to 15 do
-      let k = base + (j * 4) in
-      w.(j) <- sl (Int32.of_int (Bytes.get_uint8 m k)) 24 lor
-               sl (Int32.of_int (Bytes.get_uint8 m (k + 1))) 16 lor
-               sl (Int32.of_int (Bytes.get_uint8 m (k + 2))) 8 lor
-               (Int32.of_int (Bytes.get_uint8 m (k + 3)))
-    done;
+    for j = 0 to 15 do w.(j) <- Bytes.get_int32_be m (base + (j * 4)); done;
     (* Loop *)
     a := !h0; b := !h1; c := !h2; d := !h3; e := !h4;
     for t = 0 to 79 do
@@ -95,12 +88,7 @@ let sha_1 s =
     h4 := !h4 ++ !e
   done;
   let h = Bytes.create 20 in
-  let i2s h k i =
-    Bytes.set_uint8 h k ((Int32.to_int (sr i 24)) &&& 0xFF);
-    Bytes.set_uint8 h (k + 1) ((Int32.to_int (sr i 16)) &&& 0xFF);
-    Bytes.set_uint8 h (k + 2) ((Int32.to_int (sr i 8)) &&& 0xFF);
-    Bytes.set_uint8 h (k + 3) ((Int32.to_int i) &&& 0xFF);
-  in
+  let i2s h k i = Bytes.set_int32_be h k i in
   i2s h 0 !h0;
   i2s h 4 !h1;
   i2s h 8 !h2;
