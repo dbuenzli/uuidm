@@ -55,10 +55,10 @@ let sha_1 s =
     let base = i * 64 in
     for j = 0 to 15 do
       let k = base + (j * 4) in
-      w.(j) <- sl (Int32.of_int (Char.code @@ Bytes.get m k)) 24 lor
-               sl (Int32.of_int (Char.code @@ Bytes.get m (k + 1))) 16 lor
-               sl (Int32.of_int (Char.code @@ Bytes.get m (k + 2))) 8 lor
-               (Int32.of_int (Char.code @@ Bytes.get m (k + 3)))
+      w.(j) <- sl (Int32.of_int (Bytes.get_uint8 m k)) 24 lor
+               sl (Int32.of_int (Bytes.get_uint8 m (k + 1))) 16 lor
+               sl (Int32.of_int (Bytes.get_uint8 m (k + 2))) 8 lor
+               (Int32.of_int (Bytes.get_uint8 m (k + 3)))
     done;
     (* Loop *)
     a := !h0; b := !h1; c := !h2; d := !h3; e := !h4;
@@ -114,18 +114,16 @@ type t = string (* 16 bytes long strings *)
 
 let msg_uuid v digest ns n =
   let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in
-  Bytes.set_uint8 u 6 @@
-    ((v lsl 4) lor (Char.code (Bytes.get u 6) land 0b0000_1111));
-  Bytes.set_uint8 u 8 @@
-    (0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111));
+  Bytes.set_uint8 u 6 ((v lsl 4) lor ((Bytes.get_uint8 u 6) land 0b0000_1111));
+  Bytes.set_uint8 u 8(0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111));
   Bytes.unsafe_to_string u
 
 let v3 ns n = msg_uuid 3 md5 ns n
 let v5 ns n = msg_uuid 5 sha_1 ns n
 let v4 b =
   let u = Bytes.sub b 0 16 in
-  let b6 = 0b0100_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
-  let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
+  let b6 = 0b0100_0000 lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
+  let b8 = 0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111) in
   Bytes.set_uint8 u 6 b6;
   Bytes.set_uint8 u 8 b8;
   Bytes.unsafe_to_string u
@@ -187,8 +185,8 @@ let v7_ns =
     let sub_ms_frac = shift_right_logical (mul ns sub_ms_frac_multiplier) 52 in
     Bytes.set_int64_be u 0 (shift_left ms 16);
     Bytes.set_int16_be u 6 (to_int sub_ms_frac);
-    let b6 = 0b0111_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
-    let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
+    let b6 = 0b0111_0000 lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
+    let b8 = 0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111) in
     Bytes.set_uint8 u 6 b6;
     Bytes.set_uint8 u 8 b8;
     Bytes.unsafe_to_string u
