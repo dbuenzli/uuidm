@@ -16,15 +16,15 @@ let sha_1 s =
     Bytes.fill m len (mlen - len) '\x00';
     Bytes.set m len '\x80';
     if Sys.word_size > 32 then begin
-      Bytes.set m (mlen - 8) (Char.unsafe_chr (blen lsr 56 land 0xFF));
-      Bytes.set m (mlen - 7) (Char.unsafe_chr (blen lsr 48 land 0xFF));
-      Bytes.set m (mlen - 6) (Char.unsafe_chr (blen lsr 40 land 0xFF));
-      Bytes.set m (mlen - 5) (Char.unsafe_chr (blen lsr 32 land 0xFF));
+      Bytes.set_uint8 m (mlen - 8) (blen lsr 56 land 0xFF);
+      Bytes.set_uint8 m (mlen - 7) (blen lsr 48 land 0xFF);
+      Bytes.set_uint8 m (mlen - 6) (blen lsr 40 land 0xFF);
+      Bytes.set_uint8 m (mlen - 5) (blen lsr 32 land 0xFF);
     end;
-    Bytes.set m (mlen - 4) (Char.unsafe_chr (blen lsr 24 land 0xFF));
-    Bytes.set m (mlen - 3) (Char.unsafe_chr (blen lsr 16 land 0xFF));
-    Bytes.set m (mlen - 2) (Char.unsafe_chr (blen lsr 8 land 0xFF));
-    Bytes.set m (mlen - 1) (Char.unsafe_chr (blen land 0xFF));
+    Bytes.set_uint8 m (mlen - 4) (blen lsr 24 land 0xFF);
+    Bytes.set_uint8 m (mlen - 3) (blen lsr 16 land 0xFF);
+    Bytes.set_uint8 m (mlen - 2) (blen lsr 8 land 0xFF);
+    Bytes.set_uint8 m (mlen - 1) (blen land 0xFF);
     m
   in
   (* Operations on int32 *)
@@ -96,10 +96,10 @@ let sha_1 s =
   done;
   let h = Bytes.create 20 in
   let i2s h k i =
-    Bytes.set h k (Char.unsafe_chr ((Int32.to_int (sr i 24)) &&& 0xFF));
-    Bytes.set h (k + 1) (Char.unsafe_chr ((Int32.to_int (sr i 16)) &&& 0xFF));
-    Bytes.set h (k + 2) (Char.unsafe_chr ((Int32.to_int (sr i 8)) &&& 0xFF));
-    Bytes.set h (k + 3) (Char.unsafe_chr ((Int32.to_int i) &&& 0xFF));
+    Bytes.set_uint8 h k ((Int32.to_int (sr i 24)) &&& 0xFF);
+    Bytes.set_uint8 h (k + 1) ((Int32.to_int (sr i 16)) &&& 0xFF);
+    Bytes.set_uint8 h (k + 2) ((Int32.to_int (sr i 8)) &&& 0xFF);
+    Bytes.set_uint8 h (k + 3) ((Int32.to_int i) &&& 0xFF);
   in
   i2s h 0 !h0;
   i2s h 4 !h1;
@@ -114,9 +114,9 @@ type t = string (* 16 bytes long strings *)
 
 let msg_uuid v digest ns n =
   let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in
-  Bytes.set u 6 @@ Char.unsafe_chr
+  Bytes.set_uint8 u 6 @@
     ((v lsl 4) lor (Char.code (Bytes.get u 6) land 0b0000_1111));
-  Bytes.set u 8 @@ Char.unsafe_chr
+  Bytes.set_uint8 u 8 @@
     (0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111));
   Bytes.unsafe_to_string u
 
@@ -126,8 +126,8 @@ let v4 b =
   let u = Bytes.sub b 0 16 in
   let b6 = 0b0100_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
   let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
-  Bytes.set u 6 (Char.unsafe_chr b6);
-  Bytes.set u 8 (Char.unsafe_chr b8);
+  Bytes.set_uint8 u 6 b6;
+  Bytes.set_uint8 u 8 b8;
   Bytes.unsafe_to_string u
 
 let rand s = fun () -> Random.State.bits s (* 30 random bits generator. *)
@@ -138,24 +138,22 @@ let v4_ocaml_random_uuid rand =
   let r3 = rand () in
   let r4 = rand () in
   let u = Bytes.create 16 in
-  Bytes.set u 0 @@ Char.unsafe_chr (r0 land 0xFF);
-  Bytes.set u 1 @@ Char.unsafe_chr (r0 lsr 8 land 0xFF);
-  Bytes.set u 2 @@ Char.unsafe_chr (r0 lsr 16 land 0xFF);
-  Bytes.set u 3 @@ Char.unsafe_chr (r1 land 0xFF);
-  Bytes.set u 4 @@ Char.unsafe_chr (r1 lsr 8 land 0xFF);
-  Bytes.set u 5 @@ Char.unsafe_chr (r1 lsr 16 land 0xFF);
-  Bytes.set u 6 @@ Char.unsafe_chr
-    (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
-  Bytes.set u 7 @@ Char.unsafe_chr (r2 land 0xFF);
-  Bytes.set u 8 @@ Char.unsafe_chr
-    (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
-  Bytes.set u 9 @@ Char.unsafe_chr (r2 lsr 8 land 0xFF);
-  Bytes.set u 10 @@ Char.unsafe_chr (r2 lsr 16 land 0xFF);
-  Bytes.set u 11 @@ Char.unsafe_chr (r3 land 0xFF);
-  Bytes.set u 12 @@ Char.unsafe_chr (r3 lsr 8 land 0xFF);
-  Bytes.set u 13 @@ Char.unsafe_chr (r3 lsr 16 land 0xFF);
-  Bytes.set u 14 @@ Char.unsafe_chr (r4 land 0xFF);
-  Bytes.set u 15 @@ Char.unsafe_chr (r4 lsr 8 land 0xFF);
+  Bytes.set_uint8 u 0 (r0 land 0xFF);
+  Bytes.set_uint8 u 1 (r0 lsr 8 land 0xFF);
+  Bytes.set_uint8 u 2 (r0 lsr 16 land 0xFF);
+  Bytes.set_uint8 u 3 (r1 land 0xFF);
+  Bytes.set_uint8 u 4 (r1 lsr 8 land 0xFF);
+  Bytes.set_uint8 u 5 (r1 lsr 16 land 0xFF);
+  Bytes.set_uint8 u 6 (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
+  Bytes.set_uint8 u 7 (r2 land 0xFF);
+  Bytes.set_uint8 u 8 (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
+  Bytes.set_uint8 u 9 (r2 lsr 8 land 0xFF);
+  Bytes.set_uint8 u 10 (r2 lsr 16 land 0xFF);
+  Bytes.set_uint8 u 11 (r3 land 0xFF);
+  Bytes.set_uint8 u 12 (r3 lsr 8 land 0xFF);
+  Bytes.set_uint8 u 13 (r3 lsr 16 land 0xFF);
+  Bytes.set_uint8 u 14 (r4 land 0xFF);
+  Bytes.set_uint8 u 15 (r4 lsr 8 land 0xFF);
   Bytes.unsafe_to_string u
 
 let v4_gen seed =
@@ -191,8 +189,8 @@ let v7_ns =
     Bytes.set_int16_be u 6 (to_int sub_ms_frac);
     let b6 = 0b0111_0000 lor (Char.code (Bytes.get u 6) land 0b0000_1111) in
     let b8 = 0b1000_0000 lor (Char.code (Bytes.get u 8) land 0b0011_1111) in
-    Bytes.set u 6 (Char.unsafe_chr b6);
-    Bytes.set u 8 (Char.unsafe_chr b8);
+    Bytes.set_uint8 u 6 b6;
+    Bytes.set_uint8 u 8 b8;
     Bytes.unsafe_to_string u
 
 (* Constants *)
