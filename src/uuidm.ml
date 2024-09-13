@@ -162,11 +162,22 @@ let v4_gen seed =
   let rand = rand seed in
   function () -> v4_ocaml_random_uuid rand
 
-let v7 =
+let v7 ~t_ms ~rand_a ~rand_b =
+  let b_6_7 = (7 lsl 12) lor (rand_a land 0xFFF) in
+  let b_8_16 =
+    Int64.(logor (shift_left 2L 62) (logand rand_b 0x3FFF_FFFF_FFFF_FFFFL))
+  in
+  let u = Bytes.create 16 in
+  Bytes.set_int64_be u 0 (Int64.shift_left t_ms 16);
+  Bytes.set_int16_be u 6 b_6_7;
+  Bytes.set_int64_be u 8 b_8_16;
+  Bytes.unsafe_to_string u
+
+let v7_ns =
   let open Int64 in
   let ns_in_ms = 1_000_000L in
   let sub_ms_frac_multiplier = unsigned_div minus_one ns_in_ms in
-  fun ts b ->
+  fun ~t_ns:ts ~rand_b:b ->
     let u = Bytes.create 16 in
     Bytes.blit b 0 u 8 8;
     (* RFC9562 requires we use 48 bits for a timestamp in milliseconds, and

@@ -59,9 +59,13 @@ let test_gen () =
     (Uuidm.v5 Uuidm.ns_dns "www.example.com")
 	  "2ed6657d-e927-568b-95e1-2665a8aea6a2";
   test_id ~__POS__
-    (Uuidm.v7 Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
-       (Bytes.of_string "\x12\x34\x56\x78\x9a\xbc\xde\xf0"))
+    (Uuidm.v7_ns ~t_ns:Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
+       ~rand_b:(Bytes.of_string "\x12\x34\x56\x78\x9a\xbc\xde\xf0"))
     "10203040-5060-7369-9234-56789abcdef0";
+  test_id ~__POS__
+    (Uuidm.v7
+       ~t_ms:0x017F22E279B0L ~rand_a:0xCC3 ~rand_b:0x18C4DC0C0C07398FL)
+    "017F22E2-79B0-7CC3-98C4-DC0C0C07398F";
   ()
 
 let main () =
