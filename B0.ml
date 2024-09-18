@@ -42,9 +42,9 @@ let default =
     |> ~~ B0_meta.description_tags ["uuid"; "codec"; "org:erratique"]
     |> B0_meta.tag B0_opam.tag
     |> ~~ B0_opam.depopts ["cmdliner", ""]
-    |> ~~ B0_opam.conflicts [ "cmdliner", {|< "1.1.0"|}]
+    |> ~~ B0_opam.conflicts [ "cmdliner", {|< "1.3.0"|}]
     |> ~~ B0_opam.depends
-      [ "ocaml", {|>= "4.08.0"|};
+      [ "ocaml", {|>= "4.14.0"|};
         "ocamlfind", {|build|};
         "ocamlbuild", {|build|};
         "topkg", {|build & >= "1.0.3"|};

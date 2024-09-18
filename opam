@@ -9,7 +9,7 @@ identifiers version 3, 5 (named based with MD5, SHA-1 hashing), 4
 
 Uuidm has no dependency and is distributed under the ISC license.
 
-[rfc9562]: http://tools.ietf.org/html/rfc9562
+[rfc9562]: https://www.rfc-editor.org/rfc/rfc9562
 
 Homepage: <https://erratique.ch/software/uuidm>"""
 maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
@@ -20,7 +20,7 @@ homepage: "https://erratique.ch/software/uuidm"
 doc: "https://erratique.ch/software/uuidm/doc/"
 bug-reports: "https://github.com/dbuenzli/uuidm/issues"
 depends: [
-  "ocaml" {>= "4.08.0"}
+  "ocaml" {>= "4.14.0"}
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build & >= "1.0.3"}

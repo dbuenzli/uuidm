@@ -1,4 +1,5 @@
 
+- Require OCaml 4.14.
 - Add `Uuidm.v7`, create time and random based V7 UUIDs using
   client provided random bytes and time. Thanks to Robin 
   Newton for the patch (#14).
