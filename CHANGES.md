@@ -8,6 +8,8 @@
   the `Uuidm.version` type.
 - `uuidtrip` set standard output to binary when outputing 
   binary uuids. 
+- Documentation: clarified that `Random` based UUID generators are not stable 
+  accross OCaml and UUID versions.
 
 v0.9.8 2022-02-09 La Forclaz (VS)
 ---------------------------------

@@ -3,6 +3,13 @@
    SPDX-License-Identifier: ISC
   ---------------------------------------------------------------------------*)
 
+(* Bits *)
+
+type bits48 = int64
+type bits12 = int
+
+(* Hashing *)
+
 let md5 = Digest.string
 let sha_1 s =
   (* Based on pseudo-code of RFC 3174. Slow and ugly but does the job. *)
@@ -98,7 +105,7 @@ let sha_1 s =
 
 (* Uuids *)
 
-type t = string (* 16 bytes long strings *)
+type t = string (* 16 bytes *)
 
 let msg_uuid v digest ns n =
   let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in

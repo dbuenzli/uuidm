@@ -9,4 +9,4 @@ let () = print_endline (Uuidm.to_string (uuid ()))
 
 let feed_id ~feed_id = "urn:uuid:" ^ (Uuidm.to_string feed_id)
 let entry_id ~feed_id ~rfc3339_stamp =
-    "urn:uuid:" ^ (Uuidm.to_string (Uuidm.v5 feed_id rfc3339_stamp))
+  "urn:uuid:" ^ (Uuidm.to_string @@ Uuidm.v5 feed_id rfc3339_stamp)

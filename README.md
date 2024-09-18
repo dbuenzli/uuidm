@@ -3,12 +3,11 @@ Uuidm — Universally unique identifiers (UUIDs) for OCaml
 
 Uuidm is an OCaml library implementing 128 bits universally unique
 identifiers version 3, 5 (named based with MD5, SHA-1 hashing), 4
-(random based) and 7 (time and random based) according to [RFC
-9562][rfc9562].
+(random based) and 7 (time and random based) according to [RFC 9562].
 
-Uuidm has no dependency and is distributed under the ISC license.
+Uuidm has no dependency. It is distributed under the ISC license.
 
-[rfc9562]: https://www.rfc-editor.org/rfc/rfc9562
+[RFC 9562]: https://www.rfc-editor.org/rfc/rfc9562
 
 Homepage: <https://erratique.ch/software/uuidm>  
 
@@ -37,5 +36,5 @@ The [`uuidtrip`] tool generates UUIDs and outputs them on stdout.
 
 See also code in the [`test`] directory.
 
-[`uuidtrip`]: test/unftrip.ml
+[`uuidtrip`]: test/uuidtrip.ml
 [`test`]: test/

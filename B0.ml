@@ -18,7 +18,6 @@ let examples = test ~/"test/examples.ml" ~run:false ~doc:"Sample code"
 let test_uuidm =
   test ~/"test/test_uuidm.ml" ~requires:[b0_std] ~doc:"Test Uuidm"
 
-
 (* Tools *)
 
 let uuidtrip =
