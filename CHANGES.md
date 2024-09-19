@@ -4,6 +4,7 @@
   client provided random bytes and time. Thanks to Robin 
   Newton for the patch (#14).
 - Add `Uuidm.max` the RFC 9569 Max UUID.
+- Add `Uuidm.{variant,version,time_ms}` UUID property accessors.
 - Formally deprecate the "informally" deprecated `Uuidm.v` function and 
   the `Uuidm.version` type.
 - `uuidtrip` set standard output to binary when outputing 

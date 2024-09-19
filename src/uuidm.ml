@@ -6,6 +6,7 @@
 (* Bits *)
 
 type bits48 = int64
+type bits4 = int
 type bits12 = int
 
 (* Hashing *)
@@ -185,6 +186,15 @@ let v7_ns =
     Bytes.set_uint8 u 6 b6;
     Bytes.set_uint8 u 8 b8;
     Bytes.unsafe_to_string u
+
+(* Properties *)
+
+let variant u = (String.get_uint8 u 8) lsr 4
+let version u = (String.get_uint8 u 6) lsr 4
+let time_ms u =
+  let variant = variant u in
+  if not (0x8 <= variant && variant <= 0xB && version u = 7) then None else
+  Some (Int64.shift_right_logical (String.get_int64_be u 0) 16)
 
 (* Constants *)
 

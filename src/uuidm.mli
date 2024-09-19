@@ -18,8 +18,12 @@ type bits48 = int64
 (** The type for 48 bits stored in the 48 lower bits of an [int64] value.
     The higher bits are either set to zero or ignored on use. *)
 
+type bits4 = int
+(** The type for 4 bits stored in the 4 lower bits of an [int] value.
+    The higher bits are either set to zero or ignored on use. *)
+
 type bits12 = int
-(** The type for 12 bits stored in the 12 lower bits an [int] value.
+(** The type for 12 bits stored in the 12 lower bits of an [int] value.
     The higher bits are either set to zero or ignored on use. *)
 
 (** {1:uuids UUIDs} *)
@@ -41,7 +45,7 @@ val v4 : bytes -> t
 
     {b Warning.} The randomness is seen literally in the result. *)
 
-val v7 : t_ms:int64 -> rand_a:int -> rand_b:int64 -> t
+val v7 : t_ms:bits48 -> rand_a:bits12 -> rand_b:int64 -> t
 (** [v7 t_ms:int ~rand_a ~rand_b] is a V7 UUID (time and random
     based) that uses 48 low bits of the POSIX timestamp [t_ms] the 12
     lower bits of of [rand_a] and the 62 lower bits of [rand_b].
@@ -49,7 +53,7 @@ val v7 : t_ms:int64 -> rand_a:int -> rand_b:int64 -> t
     {b Warning.} The timestamp and the randomness is seen literally
     in the result. *)
 
-val v7_ns : t_ns:int64 -> rand_b:bytes -> t
+val v7_ns : t_ns:bits48 -> rand_b:bytes -> t
 (** [v7_ns ts b] is a V7 UUID (time and random ased) that uses the
     first 8 bytes of [b] for randomness and takes [ts] to be the
     {e unsigned} number of nanoseconds since midnight 1 Jan 1970 UTC, leap
@@ -72,13 +76,31 @@ val v7_ns : t_ns:int64 -> rand_b:bytes -> t
        cryptographically secure pseudo-random number generator if that
        is an issue.}
     {- Sequences of UUIDs generated from a given {!Random.State.t}
-       value are not guranteed to be stable across OCaml or Uuidm versions.
+       value are not guaranteed to be stable across OCaml or Uuidm versions.
        Use the base constructors with your own
        pseudo-random number generator if that is an issue.}} *)
 
 val v4_gen : Random.State.t -> (unit -> t)
 (** [v4_gen state] is a function that generates random V4 UUIDs (random
     based) using [state]. See also {!v4}. *)
+
+(** {1:properties Properties} *)
+
+val variant : t -> bits4
+(** [variant u] is the
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-variant-field}variant field}
+    of [u], including the "don't-care" values. *)
+
+val version : t -> bits4
+(** [version u] is the
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-version-field}version field}
+    of [u]. *)
+
+val time_ms : t -> bits48 option
+(** [time_ms u] is the 48 bits
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}
+    V7 [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
+    is not a V7 UUID. *)
 
 (** {1:constants Constants} *)
 
