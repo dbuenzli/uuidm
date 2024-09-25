@@ -1,3 +1,5 @@
+v0.9.9 2024-09-26 Zagreb
+------------------------
 
 - Add `Uuidm.{v7,v7_ns}` to create time and random based V7 UUIDs. 
   Thanks to Robin Newton for the patch (#14) and Christian Linding
