@@ -5,7 +5,7 @@
 
 (* Bits *)
 
-type bits48 = int64
+type bits62 = int64
 type bits4 = int
 type bits12 = int
 
@@ -129,23 +129,23 @@ let v7 ~t_ms ~rand_a ~rand_b =
   Bytes.set_int64_be u 8 rand_b;
   make u ~version:7
 
-let v7_ns =
-  let open Int64 in
+let v7_ns ~t_ns ~rand_b =
   let ns_in_ms = 1_000_000L in
-  let sub_ms_frac_multiplier = unsigned_div minus_one ns_in_ms in
-  fun ~t_ns:ts ~rand_b:b ->
-    let u = Bytes.create 16 in
-    Bytes.blit b 0 u 8 8;
-    (* RFC9562 requires we use 48 bits for a timestamp in milliseconds, and
-       allows for 12 bits to store a sub-millisecond fraction. We get the
-       latter by multiplying to put the fraction in a 64-bit range, then
-       shifting into 12 bits. *)
-    let ms = unsigned_div ts ns_in_ms in
-    let ns = unsigned_rem ts ns_in_ms in
-    let sub_ms_frac = shift_right_logical (mul ns sub_ms_frac_multiplier) 52 in
-    Bytes.set_int64_be u 0 (shift_left ms 16);
-    Bytes.set_int16_be u 6 (to_int sub_ms_frac);
-    make u ~version:7
+  let sub_ms_frac_multiplier = Int64.unsigned_div Int64.minus_one ns_in_ms in
+  let u = Bytes.create 16 in
+  (* RFC 9562 requires we use 48 bits for a timestamp in milliseconds, and
+     allows for 12 bits to store a sub-millisecond fraction. We get the
+     latter by multiplying to put the fraction in a 64-bit range, then
+     shifting into 12 bits. *)
+  let ms = Int64.unsigned_div t_ns ns_in_ms in
+  let ns = Int64.unsigned_rem t_ns ns_in_ms in
+  let sub_ms_frac =
+    Int64.shift_right_logical (Int64.mul ns sub_ms_frac_multiplier) 52
+  in
+  Bytes.set_int64_be u 0 (Int64.shift_left ms 16);
+  Bytes.set_int16_be u 6 (Int64.to_int sub_ms_frac);
+  Bytes.set_int64_be u 8 rand_b;
+  make u ~version:7
 
 let v8 s = make (Bytes.of_string s) ~version:8
 

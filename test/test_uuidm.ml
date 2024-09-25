@@ -46,7 +46,7 @@ let test_constructors () =
 	  "2ed6657d-e927-568b-95e1-2665a8aea6a2";
   test_uuid ~__POS__ 7 ~time_ms:0x1020_3040_5060L
     (Uuidm.v7_ns ~t_ns:Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
-       ~rand_b:(Bytes.of_string "\x12\x34\x56\x78\x9a\xbc\xde\xf0"))
+       ~rand_b:0x123456789abcdef0L)
     "10203040-5060-7369-9234-56789abcdef0";
   test_uuid ~__POS__ 7 ~time_ms:0x017F22E279B0L
     (Uuidm.v7

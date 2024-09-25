@@ -14,16 +14,16 @@
 
 (** {1:bits Bits} *)
 
-type bits48 = int64
-(** The type for 48 bits stored in the 48 lower bits of an [int64] value.
-    The higher bits are either set to zero or ignored on use. *)
-
 type bits4 = int
 (** The type for 4 bits stored in the 4 lower bits of an [int] value.
     The higher bits are either set to zero or ignored on use. *)
 
 type bits12 = int
 (** The type for 12 bits stored in the 12 lower bits of an [int] value.
+    The higher bits are either set to zero or ignored on use. *)
+
+type bits62 = int64
+(** The type for 62 bits stored in the 62 lower bits of an [int64] value.
     The higher bits are either set to zero or ignored on use. *)
 
 (** {1:uuids UUIDs} *)
@@ -49,26 +49,24 @@ val v5 : t -> string -> t
     (name based with SHA-1 hashing) named by [n] and
     namespaced by [ns]. *)
 
-val v7 : t_ms:bits48 -> rand_a:bits12 -> rand_b:int64 -> t
+val v7 : t_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
 (** [v7 t_ms ~rand_a ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
-    (time and random based) using the millisecond POSIX timestamp [t_ms] and
-    random bits [rand_a] and [rand_b].
+    (time and random based) using the 64-bit millisecond POSIX timestamp
+    [t_ms] and random bits [rand_a] and [rand_b].
 
-    {b Warning.} The timestamp and the randomness is seen literally
+    {b Warning.} The timestamp and the randomness are seen literally
     in the result. *)
 
-val v7_ns : t_ns:bits48 -> rand_b:bytes -> t
-(** [v7_ns ts b] is a
-    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
-    (time and random based) that uses the
-    62 lower bits of [b] for randomness and takes [ts] to be the
-    {e unsigned} number of nanoseconds since midnight 1 Jan 1970 UTC, leap
-    seconds excluded. The timestamp will be represented in the UUID -
-    with a resolution of about 244 nanoseconds - such that the
-    ordering of UUIDs will match the ordering of timestamps.
+val v7_ns : t_ns:int64 -> rand_b:bits62 -> t
+(** [v7_ns ~ts_ns ~rand_b] is a
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7
+    UUID} (time and random based) using the {e unsigned} 64-bit
+    nanosecond POSIX timestamp [t_ns] and random bits [rand_b]. The
+    [rand_a] field is used with the timestamp's submilisecond (about
+    244 nanoseconds resolution).
 
-    {b Warning.} The timestamp and the randomness is seen literally in
+    {b Warning.} The timestamp and the randomness are seen literally in
     the result. *)
 
 val v8 : string -> t
@@ -131,11 +129,11 @@ val version : t -> bits4
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-version-field}version field}
     of [u]. *)
 
-val time_ms : t -> bits48 option
+val time_ms : t -> int64 option
 (** [time_ms u] is the
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}
-    [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
-    is not a V7 UUID. *)
+    [unit_ts_ms]} millisecond POSIX timestamp of [u] as a 64-bit
+    integer. This is [None] if [u] is not a V7 UUID. *)
 
 (** {1:preds Predicates and comparisons} *)
 
