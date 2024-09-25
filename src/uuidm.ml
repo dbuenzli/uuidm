@@ -108,43 +108,26 @@ let sha_1 s =
 
 type t = string (* 16 bytes *)
 
-let msg_uuid v digest ns n =
-  let u = Bytes.sub (Bytes.unsafe_of_string (digest (ns ^ n))) 0 16 in
-  Bytes.set_uint8 u 6 ((v lsl 4) lor ((Bytes.get_uint8 u 6) land 0b0000_1111));
-  Bytes.set_uint8 u 8(0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111));
-  Bytes.unsafe_to_string u
-
-let v3 ns n = msg_uuid 3 md5 ns n
-let v5 ns n = msg_uuid 5 sha_1 ns n
-
-let set_v4 u =
-  let b6 = 0b0100_0000 lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
+let make u ~version =
+  let b6 = (version lsl 4) lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
   let b8 = 0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111) in
   Bytes.set_uint8 u 6 b6;
-  Bytes.set_uint8 u 8 b8
+  Bytes.set_uint8 u 8 b8;
+  Bytes.unsafe_to_string u
 
-let v4 b =
-  let u = Bytes.sub b 0 16 in
-  set_v4 u; Bytes.unsafe_to_string u
+let make_named ~version digest ns n =
+  let hash = Bytes.unsafe_of_string (digest (ns ^ n)) in
+  make (Bytes.sub hash 0 16) ~version
 
-let v4_random rstate =
-  let u = Bytes.create 16 in
-  let r0 = Random.State.bits64 rstate in
-  let r1 = Random.State.bits64 rstate in
-  Bytes.set_int64_be u 0 r0;
-  Bytes.set_int64_be u 8 r1;
-  set_v4 u; Bytes.unsafe_to_string u
-
+let v3 ns n = make_named ~version:3 md5 ns n
+let v5 ns n = make_named ~version:5 sha_1 ns n
+let v4 b = make (Bytes.sub b 0 16) ~version:4
 let v7 ~t_ms ~rand_a ~rand_b =
-  let b_6_7 = (7 lsl 12) lor (rand_a land 0xFFF) in
-  let b_8_16 =
-    Int64.(logor (shift_left 2L 62) (logand rand_b 0x3FFF_FFFF_FFFF_FFFFL))
-  in
   let u = Bytes.create 16 in
   Bytes.set_int64_be u 0 (Int64.shift_left t_ms 16);
-  Bytes.set_int16_be u 6 b_6_7;
-  Bytes.set_int64_be u 8 b_8_16;
-  Bytes.unsafe_to_string u
+  Bytes.set_int16_be u 6 rand_a;
+  Bytes.set_int64_be u 8 rand_b;
+  make u ~version:7
 
 let v7_ns =
   let open Int64 in
@@ -162,13 +145,19 @@ let v7_ns =
     let sub_ms_frac = shift_right_logical (mul ns sub_ms_frac_multiplier) 52 in
     Bytes.set_int64_be u 0 (shift_left ms 16);
     Bytes.set_int16_be u 6 (to_int sub_ms_frac);
-    let b6 = 0b0111_0000 lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
-    let b8 = 0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111) in
-    Bytes.set_uint8 u 6 b6;
-    Bytes.set_uint8 u 8 b8;
-    Bytes.unsafe_to_string u
+    make u ~version:7
+
+let v8 s = make (Bytes.of_string s) ~version:8
 
 (* Generators *)
+
+let v4_random rstate =
+  let r0 = Random.State.bits64 rstate in
+  let r1 = Random.State.bits64 rstate in
+  let u = Bytes.create 16 in
+  Bytes.set_int64_be u 0 r0;
+  Bytes.set_int64_be u 8 r1;
+  make u ~version:4
 
 let v4_gen rstate = function () -> v4_random rstate
 

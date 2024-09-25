@@ -1,8 +1,8 @@
 {0 Uuidm {%html: <span class="version">%%VERSION%%</span>%}}
 
-{!Uuidm} implements 128 bits universally unique identifiers version 3, 5
-(named based with MD5, SHA-1 hashing), 4 (random based) and 7 (time
-and random based) according according to
+{!Uuidm} implements 128 bits universally unique identifiers version 3,
+5 (named based with MD5, SHA-1 hashing), 4 (random based), 7 (time and
+random based) and 8 (custom) according according to
 {{:https://www.rfc-editor.org/rfc/rfc9562} RFC 9562}.
 
 See the {{!quick}quick start}.

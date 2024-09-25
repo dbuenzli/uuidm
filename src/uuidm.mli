@@ -7,7 +7,7 @@
 
     [Uuidm] implements 128 bits universally unique identifiers version
     3, 5 (name based with MD5, SHA-1 hashing), 4 (random based), 7
-    (random and timestamp based) according to
+    (random and timestamp based) and 8 (custom) according to
     {{:https://www.rfc-editor.org/rfc/rfc9562}RFC 9562}.
 
     See the {{!page-index.quick}quick start}. *)
@@ -32,30 +32,37 @@ type t
 (** The type for UUIDs. *)
 
 val v3 : t -> string -> t
-(** [v3 ns n] is a V3 UUID (name based with MD5 hashing) named by [n] and
-    namespaced by [ns]. *)
-
-val v5 : t -> string -> t
-(** [v5 ns n] is a V5 UUID (name based with SHA-1 hashing) named by [n] and
-    namespaced by [ns]. *)
+(** [v3 ns n] is a
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-3}V3 UUID}
+    (name based with MD5 hashing) named by [n] and namespaced by [ns]. *)
 
 val v4 : bytes -> t
-(** [v4 b] is a V4 UUID (random based) that uses the first 16 bytes of
+(** [v4 b] is a {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-4}
+    V4 UUID} (random based) that uses the first 16 bytes of
     [b] for randomness. See also {!v4_gen}.
 
     {b Warning.} The randomness is seen literally in the result. *)
 
+val v5 : t -> string -> t
+(** [v5 ns n] is a
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-5}V5 UUID}
+    (name based with SHA-1 hashing) named by [n] and
+    namespaced by [ns]. *)
+
 val v7 : t_ms:bits48 -> rand_a:bits12 -> rand_b:int64 -> t
-(** [v7 t_ms:int ~rand_a ~rand_b] is a V7 UUID (time and random
-    based) that uses 48 low bits of the POSIX timestamp [t_ms] the 12
-    lower bits of of [rand_a] and the 62 lower bits of [rand_b].
+(** [v7 t_ms ~rand_a ~rand_b] is a
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
+    (time and random based) using the millisecond POSIX timestamp [t_ms] and
+    random bits [rand_a] and [rand_b].
 
     {b Warning.} The timestamp and the randomness is seen literally
     in the result. *)
 
 val v7_ns : t_ns:bits48 -> rand_b:bytes -> t
-(** [v7_ns ts b] is a V7 UUID (time and random ased) that uses the
-    first 8 bytes of [b] for randomness and takes [ts] to be the
+(** [v7_ns ts b] is a
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
+    (time and random based) that uses the
+    62 lower bits of [b] for randomness and takes [ts] to be the
     {e unsigned} number of nanoseconds since midnight 1 Jan 1970 UTC, leap
     seconds excluded. The timestamp will be represented in the UUID -
     with a resolution of about 244 nanoseconds - such that the
@@ -63,6 +70,12 @@ val v7_ns : t_ns:bits48 -> rand_b:bytes -> t
 
     {b Warning.} The timestamp and the randomness is seen literally in
     the result. *)
+
+val v8 : string -> t
+(** [v8 s] is a {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8}
+    V8 UUID} (custom) that uses the 16 bytes of [s] but overwrites the
+    {!version} and {!variant} bytes to make it a propert V8 UUID. Raises
+    [Invalid_arugment] if the length of [s] is not [16]. *)
 
 (** {1:gen Generators}
 

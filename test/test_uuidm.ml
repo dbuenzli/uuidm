@@ -52,6 +52,10 @@ let test_constructors () =
     (Uuidm.v7
        ~t_ms:0x017F22E279B0L ~rand_a:0xCC3 ~rand_b:0x18C4DC0C0C07398FL)
     "017F22E2-79B0-7CC3-98C4-DC0C0C07398F";
+  test_uuid ~__POS__ 8
+    (Uuidm.v8
+       "\x24\x89\xE9\xAD\x2E\xE2\x0E\x00\x0E\xC9\x32\xD5\xF6\x91\x81\xC0")
+    "2489E9AD-2EE2-8E00-8EC9-32D5F69181C0";
   ()
 
 let test_constants () =
