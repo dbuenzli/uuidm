@@ -84,24 +84,6 @@ val v4_gen : Random.State.t -> (unit -> t)
 (** [v4_gen state] is a function that generates random V4 UUIDs (random
     based) using [state]. See also {!v4}. *)
 
-(** {1:properties Properties} *)
-
-val variant : t -> bits4
-(** [variant u] is the
-    {{:https://www.rfc-editor.org/rfc/rfc9562#name-variant-field}variant field}
-    of [u], including the "don't-care" values. *)
-
-val version : t -> bits4
-(** [version u] is the
-    {{:https://www.rfc-editor.org/rfc/rfc9562#name-version-field}version field}
-    of [u]. *)
-
-val time_ms : t -> bits48 option
-(** [time_ms u] is the 48 bits
-    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}
-    V7 [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
-    is not a V7 UUID. *)
-
 (** {1:constants Constants} *)
 
 val nil : t
@@ -124,7 +106,25 @@ val ns_oid : t
 val ns_X500 : t
 (** [ns_dn] is the X.500 DN namespace UUID. *)
 
-(** {1:comparing Comparing} *)
+(** {1:properties Properties} *)
+
+val variant : t -> bits4
+(** [variant u] is the
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-variant-field}variant field}
+    of [u], including the "don't-care" values. *)
+
+val version : t -> bits4
+(** [version u] is the
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-version-field}version field}
+    of [u]. *)
+
+val time_ms : t -> bits48 option
+(** [time_ms u] is the 48 bits
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}
+    V7 [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
+    is not a V7 UUID. *)
+
+(** {1:preds Predicates and comparisons} *)
 
 val equal : t -> t -> bool
 (** [equal u u'] is [true] iff [u] and [u'] are equal. *)
@@ -135,12 +135,13 @@ val compare : t -> t -> int
 (** {1:fmt_binary Standard binary format}
 
     This is the binary format mandated by
-    {{:http://tools.ietf.org/html/rfc4122}RFC 4122}. *)
+    {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-format}RFC 9562}. *)
 
 val of_bytes : ?pos:int -> string -> t option
 (** [of_bytes pos s] is the UUID represented by the 16 bytes starting
-    at [pos] (defaults to [0]) in [s]. The result is [None] if the
-    string is not long enough. *)
+    at [pos] (defaults to [0]) in [s]. No particular checks are
+    performed on the bytes. The result is [None] if the string is not
+    long enough. *)
 
 val to_bytes : t -> string
 (** [to_bytes u] is [u] as a 16 bytes long string. *)
@@ -178,8 +179,6 @@ val to_string : ?upper:bool -> t -> string
 (** [to_string u] is [u] as a string of the form
     ["XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"] where X is a lower
     (or upper if [upper] is [true]) case hexadecimal number. *)
-
-(** {1:fmt Formatting} *)
 
 val pp : Format.formatter -> t -> unit
 (** [pp ppf u] formats [u] with {!to_string} on [ppf]. *)

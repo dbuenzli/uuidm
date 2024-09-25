@@ -135,9 +135,6 @@ let v4_random rstate =
   Bytes.set_int64_be u 8 r1;
   set_v4 u; Bytes.unsafe_to_string u
 
-let v4_gen rstate =
-  function () -> v4_random rstate
-
 let v7 ~t_ms ~rand_a ~rand_b =
   let b_6_7 = (7 lsl 12) lor (rand_a land 0xFFF) in
   let b_8_16 =
@@ -171,14 +168,9 @@ let v7_ns =
     Bytes.set_uint8 u 8 b8;
     Bytes.unsafe_to_string u
 
-(* Properties *)
+(* Generators *)
 
-let variant u = (String.get_uint8 u 8) lsr 4
-let version u = (String.get_uint8 u 6) lsr 4
-let time_ms u =
-  let variant = variant u in
-  if not (0x8 <= variant && variant <= 0xB && version u = 7) then None else
-  Some (Int64.shift_right_logical (String.get_int64_be u 0) 16)
+let v4_gen rstate = function () -> v4_random rstate
 
 (* Constants *)
 
@@ -189,7 +181,16 @@ let ns_url = "\x6b\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_oid = "\x6b\xa7\xb8\x12\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 let ns_X500 ="\x6b\xa7\xb8\x14\x9d\xad\x11\xd1\x80\xb4\x00\xc0\x4f\xd4\x30\xc8"
 
-(* Comparing *)
+(* Properties *)
+
+let variant u = (String.get_uint8 u 8) lsr 4
+let version u = (String.get_uint8 u 6) lsr 4
+let time_ms u =
+  let variant = variant u in
+  if not (0x8 <= variant && variant <= 0xB && version u = 7) then None else
+  Some (Int64.shift_right_logical (String.get_int64_be u 0) 16)
+
+(* Predicates and comparisons *)
 
 let equal = String.equal
 let compare = String.compare
@@ -218,8 +219,7 @@ let mixed_swaps s =
 
 let to_mixed_endian_bytes s = mixed_swaps s
 let of_mixed_endian_bytes ?pos s = match of_bytes ?pos s with
-| None -> None
-| Some s -> Some (mixed_swaps s)
+| None -> None | Some s -> Some (mixed_swaps s)
 
 (* Unsafe conversions *)
 
