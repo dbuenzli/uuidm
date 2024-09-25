@@ -15,8 +15,7 @@ See the {{!quick}quick start}.
 
 {2:random_based Random V4 UUIDs}
 
-The following [uuid] function can be used in your program to generate
-V4 random UUIDs.
+The following [uuid] function generates V4 random UUIDs.
 
 {[
 let uuid = Uuidm.v4_gen (Random.State.make_self_init ())
@@ -74,11 +73,11 @@ In order to generate monotonic time based V7 UUIDs we need to:
 
 {ul
 {- Provide a millisecond precision monotonic POSIX clock. {!Unix.gettimeofday}
-   can provide one but if your monotonicity requirements are paramount,
-   remember that it can go back in time.}
+   can provide a reasonable one but if your monotonicity requirements are
+   paramount, remember that it can go back in time.}
 {- Do something if the clock doesn't move between two UUID
-   generations. The {!Uuidm.v7_monotonic_gen} uses a counter which allows
-   to generate up to 4096 UUID per millisecond and returns [None] in case
+   generations. The {!Uuidm.v7_monotonic_gen} generator uses a counter which
+   allows to generate up to 4096 UUID per millisecond and returns [None] in case
    of rollover during the millisecond. In the code below we {!Unix.sleepf}
    for a millisecond if we reach the limit.}}
 
@@ -98,5 +97,5 @@ let () = print_endline (Uuidm.to_string (uuid ()))
 Depending on your application {!Uuidm.v7_monotonic_gen} may be a bit
 too simplistic, you can easily implement all sorts of other
 {{:https://www.rfc-editor.org/rfc/rfc9562#name-monotonicity-and-counters}
-generation schemes} using {!Uuidm.v7} or {!Uuidm.v7_ns}. Also, make
-sure to read the {{!Uuidm.gen}warnings} about generators. .
+generation schemes} by using {!Uuidm.v7} or {!Uuidm.v7_ns} directly. Also, make
+sure to read the {{!Uuidm.gen}warnings} about generators.

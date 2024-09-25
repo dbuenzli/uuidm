@@ -53,7 +53,7 @@ val v7 : time_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
 (** [v7 ~time_ms ~rand_a ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
     (time and random based) using the 64-bit millisecond POSIX timestamp
-    [t_ms] and random bits [rand_a] and [rand_b]. See also
+    [t_ms] and random bits [rand_a] and [rand_b]. See also {!v7_ns},
     {!v7_non_monotonic_gen} and {!v7_monotonic_gen}.
 
     {b Warning.} The timestamp and the randomness are seen literally
@@ -63,9 +63,9 @@ val v7_ns : time_ns:int64 -> rand_b:bits62 -> t
 (** [v7_ns ~time_ns ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7
     UUID} (time and random based) using the {e unsigned} 64-bit
-    nanosecond POSIX timestamp [t_ns] and random bits [rand_b]. The
+    nanosecond POSIX timestamp [time_ns] and random bits [rand_b]. The
     [rand_a] field is used with the timestamp's submillisecond precision
-    with about 244 nanoseconds resolution.
+    with about 244 nanoseconds resolution. See also {!v7}.
 
     {b Warning.} The timestamp and the randomness are seen literally in
     the result. *)
@@ -91,9 +91,9 @@ val v8 : string -> t
        value are not guaranteed to be stable across OCaml or Uuidm versions.
        Use the base constructors with your own
        pseudorandom number generator if that is an issue.}
-    {- Sequences of UUIDs generated using a {!posix_clock_ms} assume
+    {- Sequences of UUIDs generated using a {!posix_ms_clock} assume
        the clock is monotonic in order to generate monotonic UUIDs.
-       If you derive them from {!Unix.gettimeofday} this may not be the case.}}
+       If you derive it from {!Unix.gettimeofday} this may not be the case.}}
 *)
 
 type posix_ms_clock = unit -> int64
@@ -106,20 +106,19 @@ val v4_gen : Random.State.t -> (unit -> t)
 val v7_non_monotonic_gen :
   now_ms:posix_ms_clock -> Random.State.t -> (unit -> t)
 (** [v7_non_monotonic_gen ~now_ms state] is a function generating
-    {!v7} UUIDs using [now_ms] for the timestamp [t_ms] and random [state]
+    {!v7} UUIDs using [now_ms] for the timestamp [time_ms] and random [state]
     for [rand_a] and [rand_b]. UUIDs generated in the same millisecond
     may not be be monotonic. Use {!v7_monotonic_gen} for that. *)
 
 val v7_monotonic_gen :
   now_ms:posix_ms_clock -> Random.State.t -> (unit -> t option)
 (** [v7_monotonic_gen ~posix_now_ms state] is a function that
-    generates monotonic random {!v7} UUIDs using [now_ms] for the
-    timestamp [t_ms], [rand_a] as a counter if the clock did not move
-    between two UUID generations and [random] state for [rand_b]. This
-    allows to generate up to 4096 monotonic UUIDs per
-    millisecond. [None] is returned if the counter rolls-over until
-    the millisecond increments. See {{!page-index.time_based}this
-    example}.*)
+    generates monotonic {!v7} UUIDs using [now_ms] for the timestamp
+    [time_ms], [rand_a] as a counter if the clock did not move between
+    two UUID generations and [random] state for [rand_b]. This allows
+    to generate up to 4096 monotonic UUIDs per millisecond. [None] is
+    returned if the counter rolls over before the millisecond
+    increments. See {{!page-index.time_based}this example}.*)
 
 (** {1:constants Constants} *)
 
