@@ -25,7 +25,7 @@ let test_uuidm =
 let uuidtrip =
   let doc = "Generates universally unique identifiers (UUIDs)" in
   let srcs = [`File ~/"test/uuidtrip.ml"] in
-  let requires = [uuidm; cmdliner] in
+  let requires = [uuidm; unix; cmdliner] in
   B0_ocaml.exe "uuidtrip" ~public:true ~doc ~srcs ~requires
 
 (* Packs *)

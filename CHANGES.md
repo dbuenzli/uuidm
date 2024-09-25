@@ -18,6 +18,8 @@
   `Uuidm.{to,of}_[mixed_endian_]binary_string` (follow `Stdlib` terminology).
 - Require OCaml 4.14.
 - `uuidtrip` set standard output to binary when outputing binary uuids.
+- `uuidtrip` add options `--v3`, `--v4`, `--v5`, `--v7`.
+- `uuidtrip` add support for v7 time and random based v7 UUIDs generation.
 
 v0.9.8 2022-02-09 La Forclaz (VS)
 ---------------------------------
