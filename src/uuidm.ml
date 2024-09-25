@@ -122,14 +122,14 @@ let make_named ~version digest ns n =
 let v3 ns n = make_named ~version:3 md5 ns n
 let v5 ns n = make_named ~version:5 sha_1 ns n
 let v4 b = make (Bytes.sub b 0 16) ~version:4
-let v7 ~t_ms ~rand_a ~rand_b =
+let v7 ~time_ms ~rand_a ~rand_b =
   let u = Bytes.create 16 in
-  Bytes.set_int64_be u 0 (Int64.shift_left t_ms 16);
+  Bytes.set_int64_be u 0 (Int64.shift_left time_ms 16);
   Bytes.set_int16_be u 6 rand_a;
   Bytes.set_int64_be u 8 rand_b;
   make u ~version:7
 
-let v7_ns ~t_ns ~rand_b =
+let v7_ns ~time_ns ~rand_b =
   let ns_in_ms = 1_000_000L in
   let sub_ms_frac_multiplier = Int64.unsigned_div Int64.minus_one ns_in_ms in
   let u = Bytes.create 16 in
@@ -137,8 +137,8 @@ let v7_ns ~t_ns ~rand_b =
      allows for 12 bits to store a sub-millisecond fraction. We get the
      latter by multiplying to put the fraction in a 64-bit range, then
      shifting into 12 bits. *)
-  let ms = Int64.unsigned_div t_ns ns_in_ms in
-  let ns = Int64.unsigned_rem t_ns ns_in_ms in
+  let ms = Int64.unsigned_div time_ns ns_in_ms in
+  let ns = Int64.unsigned_rem time_ns ns_in_ms in
   let sub_ms_frac =
     Int64.shift_right_logical (Int64.mul ns sub_ms_frac_multiplier) 52
   in
@@ -165,21 +165,22 @@ let v4_gen rstate = function () -> v4_random rstate
 
 let v7_non_monotonic_gen ~now_ms rstate =
   fun () ->
-  let t_ms = now_ms () in
+  let time_ms = now_ms () in
   let rand_a = Random.State.bits (* 30 bits *) rstate  in
   let rand_b = Random.State.bits64 rstate in
-  v7 ~t_ms ~rand_a ~rand_b
+  v7 ~time_ms ~rand_a ~rand_b
 
 let v7_monotonic_gen ~now_ms rstate =
   let last_ms = ref 0L in
   let count = ref 0 in
   fun () ->
-    let t_ms = now_ms () in
+    let time_ms = now_ms () in
     let rand_b = Random.State.bits64 rstate in
-    if not (Int64.equal t_ms !last_ms)
-    then (count := 0; last_ms := t_ms; Some (v7 ~t_ms ~rand_a:0 ~rand_b)) else
-    let rand_a = incr count; !count in
-    if rand_a >= 4096 then None else Some (v7 ~t_ms ~rand_a ~rand_b)
+    if Int64.equal time_ms !last_ms then
+      let rand_a = incr count; !count in
+      if rand_a >= 4096 then None else Some (v7 ~time_ms ~rand_a ~rand_b)
+    else
+      (count := 0; last_ms := time_ms; Some (v7 ~time_ms ~rand_a:0 ~rand_b))
 
 (* Constants *)
 

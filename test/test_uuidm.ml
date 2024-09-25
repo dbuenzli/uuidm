@@ -45,12 +45,12 @@ let test_constructors () =
     (Uuidm.v5 Uuidm.ns_dns "www.example.com")
 	  "2ed6657d-e927-568b-95e1-2665a8aea6a2";
   test_uuid ~__POS__ 7 ~time_ms:0x1020_3040_5060L
-    (Uuidm.v7_ns ~t_ns:Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
+    (Uuidm.v7_ns ~time_ns:Int64.(add (mul 1_000_000L 0x1020_3040_5060L) 213135L)
        ~rand_b:0x123456789abcdef0L)
     "10203040-5060-7369-9234-56789abcdef0";
   test_uuid ~__POS__ 7 ~time_ms:0x017F22E279B0L
     (Uuidm.v7
-       ~t_ms:0x017F22E279B0L ~rand_a:0xCC3 ~rand_b:0x18C4DC0C0C07398FL)
+       ~time_ms:0x017F22E279B0L ~rand_a:0xCC3 ~rand_b:0x18C4DC0C0C07398FL)
     "017F22E2-79B0-7CC3-98C4-DC0C0C07398F";
   test_uuid ~__POS__ 8
     (Uuidm.v8

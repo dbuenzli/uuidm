@@ -49,8 +49,8 @@ val v5 : t -> string -> t
     (name based with SHA-1 hashing) named by [n] and
     namespaced by [ns]. See {{!page-index.name_based}this example}. *)
 
-val v7 : t_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
-(** [v7 ~t_ms ~rand_a ~rand_b] is a
+val v7 : time_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
+(** [v7 ~time_ms ~rand_a ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
     (time and random based) using the 64-bit millisecond POSIX timestamp
     [t_ms] and random bits [rand_a] and [rand_b]. See also
@@ -59,8 +59,8 @@ val v7 : t_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
     {b Warning.} The timestamp and the randomness are seen literally
     in the result. *)
 
-val v7_ns : t_ns:int64 -> rand_b:bits62 -> t
-(** [v7_ns ~ts_ns ~rand_b] is a
+val v7_ns : time_ns:int64 -> rand_b:bits62 -> t
+(** [v7_ns ~time_ns ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7
     UUID} (time and random based) using the {e unsigned} 64-bit
     nanosecond POSIX timestamp [t_ns] and random bits [rand_b]. The
