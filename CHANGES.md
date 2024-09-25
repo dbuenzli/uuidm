@@ -9,6 +9,9 @@
   the `Uuidm.version` type.
 - `uuidtrip` set standard output to binary when outputing 
   binary uuids. 
+- Change `Uuidm.v4_gen` generation strategy.
+- Call `Random.State.make_self_init` lazily rather than during module 
+  initialisation.
 - Documentation: clarified that `Random` based UUID generators are not stable 
   accross OCaml and UUID versions.
 

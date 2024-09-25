@@ -116,43 +116,27 @@ let msg_uuid v digest ns n =
 
 let v3 ns n = msg_uuid 3 md5 ns n
 let v5 ns n = msg_uuid 5 sha_1 ns n
-let v4 b =
-  let u = Bytes.sub b 0 16 in
+
+let set_v4 u =
   let b6 = 0b0100_0000 lor ((Bytes.get_uint8 u 6) land 0b0000_1111) in
   let b8 = 0b1000_0000 lor ((Bytes.get_uint8 u 8) land 0b0011_1111) in
   Bytes.set_uint8 u 6 b6;
-  Bytes.set_uint8 u 8 b8;
-  Bytes.unsafe_to_string u
+  Bytes.set_uint8 u 8 b8
 
-let rand s = fun () -> Random.State.bits s (* 30 random bits generator. *)
-let v4_ocaml_random_uuid rand =
-  let r0 = rand () in
-  let r1 = rand () in
-  let r2 = rand () in
-  let r3 = rand () in
-  let r4 = rand () in
+let v4 b =
+  let u = Bytes.sub b 0 16 in
+  set_v4 u; Bytes.unsafe_to_string u
+
+let v4_random rstate =
   let u = Bytes.create 16 in
-  Bytes.set_uint8 u 0 (r0 land 0xFF);
-  Bytes.set_uint8 u 1 (r0 lsr 8 land 0xFF);
-  Bytes.set_uint8 u 2 (r0 lsr 16 land 0xFF);
-  Bytes.set_uint8 u 3 (r1 land 0xFF);
-  Bytes.set_uint8 u 4 (r1 lsr 8 land 0xFF);
-  Bytes.set_uint8 u 5 (r1 lsr 16 land 0xFF);
-  Bytes.set_uint8 u 6 (0b0100_0000 lor (r1 lsr 24 land 0b0000_1111));
-  Bytes.set_uint8 u 7 (r2 land 0xFF);
-  Bytes.set_uint8 u 8 (0b1000_0000 lor (r2 lsr 24 land 0b0011_1111));
-  Bytes.set_uint8 u 9 (r2 lsr 8 land 0xFF);
-  Bytes.set_uint8 u 10 (r2 lsr 16 land 0xFF);
-  Bytes.set_uint8 u 11 (r3 land 0xFF);
-  Bytes.set_uint8 u 12 (r3 lsr 8 land 0xFF);
-  Bytes.set_uint8 u 13 (r3 lsr 16 land 0xFF);
-  Bytes.set_uint8 u 14 (r4 land 0xFF);
-  Bytes.set_uint8 u 15 (r4 lsr 8 land 0xFF);
-  Bytes.unsafe_to_string u
+  let r0 = Random.State.bits64 rstate in
+  let r1 = Random.State.bits64 rstate in
+  Bytes.set_int64_be u 0 r0;
+  Bytes.set_int64_be u 8 r1;
+  set_v4 u; Bytes.unsafe_to_string u
 
-let v4_gen seed =
-  let rand = rand seed in
-  function () -> v4_ocaml_random_uuid rand
+let v4_gen rstate =
+  function () -> v4_random rstate
 
 let v7 ~t_ms ~rand_a ~rand_b =
   let b_6_7 = (7 lsl 12) lor (rand_a land 0xFFF) in
@@ -306,11 +290,11 @@ let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
 
 (* Deprecated *)
 
-let default_rand = rand (Random.State.make_self_init ())
+let default_seed = lazy (Random.State.make_self_init ())
 
 type version = [ `V3 of t * string | `V4 | `V5 of t * string ]
 let v = function
-| `V4 -> v4_ocaml_random_uuid default_rand
+| `V4 -> v4_random (Lazy.force default_seed)
 | `V3 (ns, n) -> v3 ns n
 | `V5 (ns, n) -> v5 ns n
 
