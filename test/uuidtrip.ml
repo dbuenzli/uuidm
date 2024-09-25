@@ -12,7 +12,7 @@ let gen version ns name upper binary =
   | `V5 -> Uuidm.v5 ns name
   in
   let s = match binary with
-  | true -> Uuidm.to_bytes u
+  | true -> Uuidm.to_binary_string u
   | false -> strf "%s\n" (Uuidm.to_string ~upper u)
   in
   let () = Out_channel.set_binary_mode stdout binary in

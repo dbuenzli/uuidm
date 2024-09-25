@@ -119,9 +119,9 @@ val version : t -> bits4
     of [u]. *)
 
 val time_ms : t -> bits48 option
-(** [time_ms u] is the 48 bits
+(** [time_ms u] is the
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}
-    V7 [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
+    [unit_ts_ms]} POSIX timestamp of [u]. This is [None] if [u]
     is not a V7 UUID. *)
 
 (** {1:preds Predicates and comparisons} *)
@@ -130,21 +130,21 @@ val equal : t -> t -> bool
 (** [equal u u'] is [true] iff [u] and [u'] are equal. *)
 
 val compare : t -> t -> int
-(** [compare] is the total binary order on UUIDs. *)
+(** [compare] is the binary order on UUIDs. *)
 
 (** {1:fmt_binary Standard binary format}
 
     This is the binary format mandated by
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-format}RFC 9562}. *)
 
-val of_bytes : ?pos:int -> string -> t option
-(** [of_bytes pos s] is the UUID represented by the 16 bytes starting
+val of_binary_string : ?pos:int -> string -> t option
+(** [of_binary_string pos s] is the UUID represented by the 16 bytes starting
     at [pos] (defaults to [0]) in [s]. No particular checks are
     performed on the bytes. The result is [None] if the string is not
     long enough. *)
 
-val to_bytes : t -> string
-(** [to_bytes u] is [u] as a 16 bytes long string. *)
+val to_binary_string : t -> string
+(** [to_binary_string u] is [u] as a 16 bytes long string. *)
 
 (** {1:fmt_binary_mixed Mixed-endian binary format}
 
@@ -153,17 +153,17 @@ val to_bytes : t -> string
     little-endian. This corresponds to how UEFI or Microsoft formats
     UUIDs. *)
 
-val of_mixed_endian_bytes : ?pos:int -> string -> t option
-(** [of_mixed_endian_bytes] is like {!of_bytes} but decodes
+val of_mixed_endian_binary_string : ?pos:int -> string -> t option
+(** [of_mixed_endian_binary_string] is like {!of_bytes} but decodes
     the mixed endian serialization. *)
 
-val to_mixed_endian_bytes : t -> string
-(** [to_mixed_endian_bytes] is like {!to_bytes} but encodes
+val to_mixed_endian_binary_string : t -> string
+(** [to_mixed_endian_binary_string] is like {!to_bytes} but encodes
     the mixed endian serialization. *)
 
 (**/**)
-val unsafe_of_bytes : string -> t
-val unsafe_to_bytes : t -> string
+val unsafe_of_binary_string : string -> t
+val unsafe_to_binary_string : t -> string
 (**/**)
 
 (** {1:fmt_ascii US-ASCII format} *)
@@ -203,12 +203,25 @@ type version =
        {b Warning.} The sequence resulting from repeatedly calling
        [v `V4] is random but predictable see {!v4_gen}.}} *)
 
+[@@ocaml.warning "-3"]
+
 val v : version -> t
 [@@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
-[@@ocaml.warning "-3"]
 
 val pp_string : ?upper:bool -> Format.formatter -> t -> unit
 [@@ocaml.deprecated "Use Uuidm.pp' instead"]
+
+val of_bytes : ?pos:int -> string -> t option
+[@@ocaml.deprecated "Use Uuidm.of_binary_string instead"]
+
+val to_bytes : t -> string
+[@@ocaml.deprecated "Use Uuidm.to_binary_string instead"]
+
+val of_mixed_endian_bytes : ?pos:int -> string -> t option
+[@@ocaml.deprecated "Use Uuidm.of_mixed_endian_binary_string instead"]
+
+val to_mixed_endian_bytes : t -> string
+[@@ocaml.deprecated "Use Uuidm.to_mixed_endian_binary_string instead"]
 
 (**/**)
 val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)
@@ -216,5 +229,12 @@ val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)
 
 val create : version -> t (* deprecated *)
 [@@ocaml.deprecated "Use Uuidm.v instead"]
-[@@ocaml.warning "-3"]
+
+val unsafe_of_bytes : string -> t
+[@@ocaml.deprecated "Use Uuidm.unsafe_of_binary_string instead"]
+
+val unsafe_to_bytes : t -> string
+[@@ocaml.deprecated "Use Uuidm.unsafe_to_binary_string instead"]
 (**/**)
+
+[@@ocaml.warning "-3"]

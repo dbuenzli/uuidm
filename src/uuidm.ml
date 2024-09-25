@@ -197,8 +197,8 @@ let compare = String.compare
 
 (* Standard binary format *)
 
-let to_bytes s = s
-let of_bytes ?(pos = 0) s =
+let to_binary_string s = s
+let of_binary_string ?(pos = 0) s =
   let len = String.length s in
   if pos + 16 > len then None else
   if pos = 0 && len = 16 then Some s else
@@ -217,14 +217,14 @@ let mixed_swaps s =
   swap b 4 5; swap b 6 7;
   Bytes.unsafe_to_string b
 
-let to_mixed_endian_bytes s = mixed_swaps s
-let of_mixed_endian_bytes ?pos s = match of_bytes ?pos s with
-| None -> None | Some s -> Some (mixed_swaps s)
+let to_mixed_endian_binary_string s = mixed_swaps s
+let of_mixed_endian_binary_string ?pos s =
+  Option.map mixed_swaps (of_binary_string ?pos s)
 
 (* Unsafe conversions *)
 
-let unsafe_of_bytes u = u
-let unsafe_to_bytes u = u
+let unsafe_of_binary_string u = u
+let unsafe_to_binary_string u = u
 
 (* US-ASCII format *)
 
@@ -301,3 +301,9 @@ let v = function
 let create = v (* deprecated *)
 let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
 let print = pp_string (* deprecated *)
+let to_bytes = to_binary_string
+let of_bytes = of_binary_string
+let to_mixed_endian_bytes = to_mixed_endian_binary_string
+let of_mixed_endian_bytes = of_mixed_endian_binary_string
+let unsafe_of_bytes = unsafe_of_binary_string
+let unsafe_to_bytes = unsafe_to_binary_string

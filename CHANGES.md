@@ -1,20 +1,20 @@
 
-- Require OCaml 4.14.
-- Add `Uuidm.v7`, create time and random based V7 UUIDs using
-  client provided random bytes and time. Thanks to Robin 
-  Newton for the patch (#14).
+- Add `Uuidm.v7`, create time and random based V7 UUIDs using client provided
+  random bytes and time. Thanks to Robin Newton for the patch (#14).
 - Add `Uuidm.max` the RFC 9569 Max UUID.
 - Add `Uuidm.{variant,version,time_ms}` UUID property accessors.
-- Formally deprecate the "informally" deprecated `Uuidm.v` function and 
-  the `Uuidm.version` type.
-- `uuidtrip` set standard output to binary when outputing 
-  binary uuids. 
 - Change `Uuidm.v4_gen` generation strategy.
 - Call `Random.State.make_self_init` lazily rather than during module
   initialisation.
-- Deprecate `Uuidm.pp_string` in favor of `Uuidm.pp'`.
 - Documentation: clarified that `Random` based UUID generators are not stable 
   accross OCaml and UUID versions.
+- Deprecate `Uuidm.v`, use individual version constructors instead.
+- Deprecate type `Uuidm.version`.
+- Deprecate `Uuidm.pp_string` to `Uuidm.pp'`.
+- Deprecate `Uuidm.{to,of}_[mixed_endian_]bytes` to 
+  `Uuidm.{to,of}_[mixed_endian_]binary_string` (follow `Stdlib` terminology).
+- Require OCaml 4.14.
+- `uuidtrip` set standard output to binary when outputing binary uuids.
 
 v0.9.8 2022-02-09 La Forclaz (VS)
 ---------------------------------
