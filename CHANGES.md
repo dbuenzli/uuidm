@@ -12,7 +12,7 @@ v0.9.9 2024-09-26 Zagreb
 - Call `Random.State.make_self_init` lazily rather than during module
   initialisation.
 - Documentation: clarified that `Random` based UUID generators are not stable 
-  accross OCaml and UUID versions.
+  accross OCaml and Uuidm versions.
 - Deprecate `Uuidm.v`, use individual version constructors instead.
 - Deprecate type `Uuidm.version`.
 - Deprecate `Uuidm.pp_string` to `Uuidm.pp'`.
@@ -21,7 +21,7 @@ v0.9.9 2024-09-26 Zagreb
 - Require OCaml 4.14.
 - `uuidtrip` set standard output to binary when outputing binary uuids.
 - `uuidtrip` add options `--v3`, `--v4`, `--v5`, `--v7`.
-- `uuidtrip` add support for v7 time and random based v7 UUIDs generation.
+- `uuidtrip` add support for time and random based v7 UUIDs generation.
 
 v0.9.8 2022-02-09 La Forclaz (VS)
 ---------------------------------
