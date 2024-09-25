@@ -147,7 +147,10 @@ let v7_ns ~time_ns ~rand_b =
   Bytes.set_int64_be u 8 rand_b;
   make u ~version:7
 
-let v8 s = make (Bytes.of_string s) ~version:8
+let v8 s =
+  let l = String.length s in
+  if l = 16 then make (Bytes.of_string s) ~version:8 else
+  invalid_arg (Printf.sprintf "expected 16 bytes but found: %d" l)
 
 (* Generators *)
 

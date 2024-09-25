@@ -74,7 +74,7 @@ val v8 : string -> t
 (** [v8 s] is a {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8}
     V8 UUID} (custom) that uses the 16 bytes of [s] but overwrites the
     {!version} and {!variant} bytes to make it a propert V8 UUID. Raises
-    [Invalid_arugment] if the length of [s] is not [16]. *)
+    [Invalid_argument] if the length of [s] is not [16]. *)
 
 (** {1:gen Generators}
 
@@ -93,8 +93,7 @@ val v8 : string -> t
        pseudorandom number generator if that is an issue.}
     {- Sequences of UUIDs generated using a {!posix_ms_clock} assume
        the clock is monotonic in order to generate monotonic UUIDs.
-       If you derive it from {!Unix.gettimeofday} this may not be the case.}}
-*)
+       If you derive it from {!Unix.gettimeofday} this may not be the case.}} *)
 
 type posix_ms_clock = unit -> int64
 (** The type for millisecond precision POSIX time clocks.  *)

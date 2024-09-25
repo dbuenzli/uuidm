@@ -56,6 +56,7 @@ let test_constructors () =
     (Uuidm.v8
        "\x24\x89\xE9\xAD\x2E\xE2\x0E\x00\x0E\xC9\x32\xD5\xF6\x91\x81\xC0")
     "2489E9AD-2EE2-8E00-8EC9-32D5F69181C0";
+  Test.invalid_arg ~__POS__ @@ fun () -> ignore (Uuidm.v8 "");
   ()
 
 let test_constants () =
