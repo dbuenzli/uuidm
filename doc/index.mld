@@ -13,16 +13,18 @@ See the {{!quick}quick start}.
 
 {1:quick Quick start}
 
-{2:random Random V4 UUIDs}
+{2:random_based Random V4 UUIDs}
 
 The following [uuid] function can be used in your program to generate
-V4 random UUIDs. Read the {{!Uuidm.gen}warnings} about generators though.
+V4 random UUIDs.
 
 {[
 let uuid = Uuidm.v4_gen (Random.State.make_self_init ())
 let () = print_endline (Uuidm.to_string (uuid ()))
 let () = print_endline (Uuidm.to_string (uuid ()))
 ]}
+
+Make sure to read the {{!Uuidm.gen}warnings} about random generators.
 
 {2:name_based Name based V5 UUIDs}
 
@@ -65,3 +67,36 @@ This assumes that
    to render them to RFC 3339 with a fixed time zone. Alternatively
    you can directly use the decimal representation of the timestamp
    as the data to hash.}}
+
+{2:time_based Monotonic time based V7 UUIDs}
+
+In order to generate monotonic time based V7 UUIDs we need to:
+
+{ul
+{- Provide a millisecond precision monotonic POSIX clock. {!Unix.gettimeofday}
+   can provide one but if your monotonicity requirements are paramount,
+   remember that it can go back in time.}
+{- Do something if the clock doesn't move between two UUID
+   generations. The {!Uuidm.v7_monotonic_gen} uses a counter which allows
+   to generate up to 4096 UUID per millisecond and returns [None] in case
+   of rollover during the millisecond. In the code below we {!Unix.sleepf}
+   for a millisecond if we reach the limit.}}
+
+{[
+let uuid_monotonic =
+  let now_ms () = Int64.of_float (Unix.gettimeofday () *. 1000.) in
+  Uuidm.v7_monotonic_gen ~now_ms (Random.State.make_self_init ())
+
+let rec uuid () = match uuid_monotonic () with
+| None -> (* Too many UUIDs generated in a ms *) Unix.sleepf 1e-3; uuid ()
+| Some uuid -> uuid
+
+let () = print_endline (Uuidm.to_string (uuid ()))
+let () = print_endline (Uuidm.to_string (uuid ()))
+]}
+
+Depending on your application {!Uuidm.v7_monotonic_gen} may be a bit
+too simplistic, you can easily implement all sorts of other
+{{:https://www.rfc-editor.org/rfc/rfc9562#name-monotonicity-and-counters}
+generation schemes} using {!Uuidm.v7} or {!Uuidm.v7_ns}. Also, make
+sure to read the {{!Uuidm.gen}warnings} about generators. .

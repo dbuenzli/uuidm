@@ -4,6 +4,7 @@ open B0_kit.V000
 
 let b0_std = B0_ocaml.libname "b0.std"
 let cmdliner = B0_ocaml.libname "cmdliner"
+let unix = B0_ocaml.libname "unix"
 let uuidm = B0_ocaml.libname "uuidm"
 
 (* Libraries *)
@@ -14,7 +15,8 @@ let uuidm_lib = B0_ocaml.lib uuidm ~srcs:[`Dir ~/"src"]
 
 let test ?(requires = []) = B0_ocaml.test ~requires:(uuidm :: requires)
 let perf = test ~/"test/perf.ml" ~run:false ~doc:"Test Uuidm performance"
-let examples = test ~/"test/examples.ml" ~run:false ~doc:"Sample code"
+let examples =
+  test ~/"test/examples.ml" ~run:false ~requires:[unix] ~doc:"Sample code"
 let test_uuidm =
   test ~/"test/test_uuidm.ml" ~requires:[b0_std] ~doc:"Test Uuidm"
 

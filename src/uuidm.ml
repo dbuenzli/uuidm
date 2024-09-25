@@ -151,6 +151,8 @@ let v8 s = make (Bytes.of_string s) ~version:8
 
 (* Generators *)
 
+type posix_ms_clock = unit -> int64
+
 let v4_random rstate =
   let r0 = Random.State.bits64 rstate in
   let r1 = Random.State.bits64 rstate in
@@ -160,6 +162,24 @@ let v4_random rstate =
   make u ~version:4
 
 let v4_gen rstate = function () -> v4_random rstate
+
+let v7_non_monotonic_gen ~now_ms rstate =
+  fun () ->
+  let t_ms = now_ms () in
+  let rand_a = Random.State.bits (* 30 bits *) rstate  in
+  let rand_b = Random.State.bits64 rstate in
+  v7 ~t_ms ~rand_a ~rand_b
+
+let v7_monotonic_gen ~now_ms rstate =
+  let last_ms = ref 0L in
+  let count = ref 0 in
+  fun () ->
+    let t_ms = now_ms () in
+    let rand_b = Random.State.bits64 rstate in
+    if not (Int64.equal t_ms !last_ms)
+    then (count := 0; last_ms := t_ms; Some (v7 ~t_ms ~rand_a:0 ~rand_b)) else
+    let rand_a = incr count; !count in
+    if rand_a >= 4096 then None else Some (v7 ~t_ms ~rand_a ~rand_b)
 
 (* Constants *)
 

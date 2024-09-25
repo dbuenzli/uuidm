@@ -2,6 +2,7 @@
 - Add `Uuidm.{v7,v7_ns}` to create time and random based V7 UUIDs. 
   Thanks to Robin Newton for the patch (#14) and Christian Linding
   and Pau Ruiz Safont for the help.
+- Add `Uuidm.v7_[non_]monotonic_gen` V7 UUID generators.
 - Add `Uuidm.v8` to create V8 custom UUIDs.
 - Add `Uuidm.max` the RFC 9569 Max UUID.
 - Add `Uuidm.{variant,version,time_ms}` UUID property accessors.
