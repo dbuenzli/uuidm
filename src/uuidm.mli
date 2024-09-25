@@ -182,12 +182,10 @@ val to_string : ?upper:bool -> t -> string
 (** {1:fmt Formatting} *)
 
 val pp : Format.formatter -> t -> unit
-(** [pp ppf u] formats a representation based on {!to_string}
-    of [u] on [ppf]. *)
+(** [pp ppf u] formats [u] with {!to_string} on [ppf]. *)
 
-val pp_string : ?upper:bool -> Format.formatter -> t -> unit
-(** [pp_string ?upper ppf u] formats [u] on [ppf] like {!to_string} would
-    do. *)
+val pp' : upper:bool -> Format.formatter -> t -> unit
+(** [pp' ~upper ppf u] formats [u] with {!to_string}[ ~upper] on [ppf]. *)
 
 (** {1:deprecated Deprecated} *)
 
@@ -209,6 +207,9 @@ type version =
 val v : version -> t
 [@@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
 [@@ocaml.warning "-3"]
+
+val pp_string : ?upper:bool -> Format.formatter -> t -> unit
+[@@ocaml.deprecated "Use Uuidm.pp' instead"]
 
 (**/**)
 val print : ?upper:bool -> Format.formatter -> t -> unit (* deprecated *)

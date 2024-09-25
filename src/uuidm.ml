@@ -286,7 +286,7 @@ let to_string ?(upper = false) u =
 (* Pretty-printing *)
 
 let pp ppf u = Format.pp_print_string ppf (to_string u)
-let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
+let pp' ~upper ppf u = Format.pp_print_string ppf (to_string ~upper u)
 
 (* Deprecated *)
 
@@ -299,4 +299,5 @@ let v = function
 | `V5 (ns, n) -> v5 ns n
 
 let create = v (* deprecated *)
+let pp_string ?upper ppf u = Format.pp_print_string ppf (to_string ?upper u)
 let print = pp_string (* deprecated *)
