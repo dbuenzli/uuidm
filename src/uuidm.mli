@@ -53,7 +53,7 @@ val v7 : time_ms:int64 -> rand_a:bits12 -> rand_b:bits62 -> t
 (** [v7 ~time_ms ~rand_a ~rand_b] is a
     {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7}V7 UUID}
     (time and random based) using the 64-bit millisecond POSIX timestamp
-    [t_ms] and random bits [rand_a] and [rand_b]. See also {!v7_ns},
+    [time_ms] and random bits [rand_a] and [rand_b]. See also {!v7_ns},
     {!v7_non_monotonic_gen} and {!v7_monotonic_gen}.
 
     {b Warning.} The timestamp and the randomness are seen literally
@@ -73,7 +73,7 @@ val v7_ns : time_ns:int64 -> rand_b:bits62 -> t
 val v8 : string -> t
 (** [v8 s] is a {{:https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8}
     V8 UUID} (custom) that uses the 16 bytes of [s] but overwrites the
-    {!version} and {!variant} bytes to make it a propert V8 UUID. Raises
+    {!version} and {!variant} bits to make it a propert V8 UUID. Raises
     [Invalid_argument] if the length of [s] is not [16]. *)
 
 (** {1:gen Generators}
