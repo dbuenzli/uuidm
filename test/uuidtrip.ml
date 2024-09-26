@@ -79,15 +79,16 @@ let cmd =
     `S "DESCRIPTION";
     `P "$(tname) generates 128 bits universally unique identifiers version
         3, 5 (name based with MD5, SHA-1 hashing), 4 (random based) and
-        7 (time and random based) according to RFC 4122.";
+        7 (time and random based) according to RFC 9562.";
     `P "Invoked without any option, a random based version 4 UUID is \
         generated and written on stdout.";
     `S "SEE ALSO";
-    `P "P. Leach et al. A universally unique identifier (UUID) URN Namespace,
-        2005. $(i, http://tools.ietf.org/html/rfc4122)";
+    `P "P. Leach et al. Universally Unique IDentifiers (UUIDs),
+        2024. $(i,https://www.rfc-editor.org/rfc/rfc9562)";
     `S "BUGS";
-    `P "This program is distributed with the Uuidm OCaml library.
-        See https://erratique.ch/software/uuidm for contact information."; ]
+    `P "This program is distributed with the Uuidm OCaml library. \
+        See $(i,https://erratique.ch/software/uuidm) for contact \
+        information."; ]
   in
   Cmd.v (Cmd.info "uuidtrip" ~version:"%%VERSION%%" ~doc ~man) @@
   let+ version and+ ns and+ name and+ upper and+ binary in
