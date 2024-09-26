@@ -223,11 +223,10 @@ val pp' : upper:bool -> Format.formatter -> t -> unit
 
 (** {1:deprecated Deprecated} *)
 
-type version =
+type[@ocaml.deprecated "Use the version specific Uuidm.v* functions."] version =
 [ `V3 of t * string (** Name based with MD5 hashing *)
 | `V4 (** Random based *)
 | `V5 of t * string (** Name based with SHA-1 hasing *) ]
-[@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
 (** The type for UUID versions and generation parameters.
     {ul
     {- [`V3] and [`V5] specify a namespace and a name for the generation.}
@@ -238,7 +237,7 @@ type version =
        {b Warning.} The sequence resulting from repeatedly calling
        [v `V4] is random but predictable see {!v4_gen}.}} *)
 
-[@@ocaml.warning "-3"]
+[@@@alert "-deprecated"]
 
 val v : version -> t
 [@@ocaml.deprecated "Use the version specific Uuidm.v* functions."]
@@ -271,5 +270,3 @@ val unsafe_of_bytes : string -> t
 val unsafe_to_bytes : t -> string
 [@@ocaml.deprecated "Use Uuidm.unsafe_to_binary_string instead"]
 (**/**)
-
-[@@ocaml.warning "-3"]
