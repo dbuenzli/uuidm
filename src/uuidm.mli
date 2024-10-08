@@ -93,21 +93,29 @@ val v8 : string -> t
        pseudorandom number generator if that is an issue.}
     {- Sequences of UUIDs generated using a {!posix_ms_clock} assume
        the clock is monotonic in order to generate monotonic UUIDs.
-       If you derive it from {!Unix.gettimeofday} this may not be the case.}} *)
+       If you derive it from {!Unix.gettimeofday} this may not be the case.}}
+    {- You must ensure that the Random number state is not shared with any other Uuidm generator.
+       E.g. do not use {!Random.get_state ()} since that will result in multiple identical states,
+       yielding identical Uuids in different parts of a program.
+       Instead use {!Random.State.make_self_init ()}, or {!Random.split} (on OCaml 5+).}
+     *)
 
 type posix_ms_clock = unit -> int64
 (** The type for millisecond precision POSIX time clocks.  *)
 
 val v4_gen : Random.State.t -> (unit -> t)
 (** [v4_gen state] is a function generating {!v4} UUIDs using
-    random [state]. See {{!page-index.random_based}this example}. *)
+    random [state]. See {{!page-index.random_based}this example},
+    and read the {{!Uuidm.gen}warnings}.
+     *)
 
 val v7_non_monotonic_gen :
   now_ms:posix_ms_clock -> Random.State.t -> (unit -> t)
 (** [v7_non_monotonic_gen ~now_ms state] is a function generating
     {!v7} UUIDs using [now_ms] for the timestamp [time_ms] and random [state]
     for [rand_a] and [rand_b]. UUIDs generated in the same millisecond
-    may not be be monotonic. Use {!v7_monotonic_gen} for that. *)
+    may not be be monotonic. Use {!v7_monotonic_gen} for that.
+    Read the {{!Uuidm.gen}warnings} about random state. *)
 
 val v7_monotonic_gen :
   now_ms:posix_ms_clock -> Random.State.t -> (unit -> t option)
@@ -117,7 +125,8 @@ val v7_monotonic_gen :
     two UUID generations and [random] state for [rand_b]. This allows
     to generate up to 4096 monotonic UUIDs per millisecond. [None] is
     returned if the counter rolls over before the millisecond
-    increments. See {{!page-index.time_based}this example}.*)
+    increments. See {{!page-index.time_based}this example},
+    and read the {{!Uuidm.gen}warnings} about random state. *)
 
 (** {1:constants Constants} *)
 
