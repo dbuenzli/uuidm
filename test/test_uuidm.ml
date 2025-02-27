@@ -7,8 +7,11 @@ open B0_testing
 
 let test_uuid ?__POS__:pos version ?time_ms u us =
   Test.block ?__POS__:pos @@ fun () ->
-  let us = Uuidm.of_string us |> Test.get_some ~__POS__ in
-  let trip = Uuidm.to_string u |> Uuidm.of_string |> Test.get_some ~__POS__ in
+  let us = Test.noraise ~__POS__ @@ fun () -> Option.get (Uuidm.of_string us) in
+  let trip =
+    Test.noraise ~__POS__ @@ fun () ->
+    Option.get (Uuidm.of_string (Uuidm.to_string u))
+  in
   let variant = Uuidm.variant u in
   Test.eq (module Uuidm) u trip ~__POS__;
   Test.eq (module Uuidm) u us ~__POS__ ;
@@ -76,8 +79,10 @@ let test_mixed_endian () =
        (Uuidm.to_mixed_endian_binary_string Uuidm.ns_X500))
     "14B8a76b-ad9d-d111-80b4-00c04fd430c8";
   test_uuid ~__POS__ 13
-    (Uuidm.of_mixed_endian_binary_string (Uuidm.to_binary_string Uuidm.ns_X500)
-     |> Test.get_some ~__POS__)
+    (Test.noraise ~__POS__ @@ fun () ->
+     Option.get @@
+     Uuidm.of_mixed_endian_binary_string
+       (Uuidm.to_binary_string Uuidm.ns_X500))
     "14B8a76b-ad9d-d111-80b4-00c04fd430c8";
   ()
 
