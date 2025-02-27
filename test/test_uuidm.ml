@@ -7,8 +7,11 @@ open B0_testing
 
 let test_uuid ?__POS__:pos version ?time_ms u us =
   Test.block ?__POS__:pos @@ fun () ->
-  let us = Uuidm.of_string us |> Test.get_some ~__POS__ in
-  let trip = Uuidm.to_string u |> Uuidm.of_string |> Test.get_some ~__POS__ in
+  let us = Test.noraise ~__POS__ @@ fun () -> Option.get (Uuidm.of_string us) in
+  let trip =
+    Test.noraise ~__POS__ @@ fun () ->
+    Option.get (Uuidm.of_string (Uuidm.to_string u))
+  in
   let variant = Uuidm.variant u in
   Test.eq (module Uuidm) u trip ~__POS__;
   Test.eq (module Uuidm) u us ~__POS__ ;
@@ -16,10 +19,10 @@ let test_uuid ?__POS__:pos version ?time_ms u us =
   if Uuidm.equal u Uuidm.max then Test.int variant 0xF ~__POS__ else
   Test.holds (8 <= variant && variant <= 0xB) ~__POS__;
   Test.int (Uuidm.version u) version ~__POS__;
-  Test.option ~some:Test.Eq.int64 (Uuidm.time_ms u) time_ms ~__POS__;
+  Test.(option T.int64) (Uuidm.time_ms u) time_ms ~__POS__;
   ()
 
-let test_constructors () =
+let test_constructors =
   Test.test "Uuid.v* constructors" @@ fun () ->
   test_uuid ~__POS__ 3
     (Uuidm.v3 Uuidm.ns_dns "www.widgets.com")
@@ -59,7 +62,7 @@ let test_constructors () =
   Test.invalid_arg ~__POS__ @@ fun () -> ignore (Uuidm.v8 "");
   ()
 
-let test_constants () =
+let test_constants =
   Test.test "Uuidm UUID constants" @@ fun () ->
   test_uuid ~__POS__ 0 Uuidm.nil     "00000000-0000-0000-0000-000000000000";
   test_uuid ~__POS__ 0xF Uuidm.max   "ffffffff-ffff-ffff-ffff-ffffffffffff";
@@ -69,23 +72,19 @@ let test_constants () =
   test_uuid ~__POS__ 1 Uuidm.ns_X500 "6ba7b814-9dad-11d1-80b4-00c04fd430c8";
   ()
 
-let test_mixed_endian () =
+let test_mixed_endian =
   Test.test "Uuidm.{of,to}_mixed_endian_binary_string" @@ fun () ->
   test_uuid ~__POS__ 13
     (Uuidm.unsafe_of_binary_string
        (Uuidm.to_mixed_endian_binary_string Uuidm.ns_X500))
     "14B8a76b-ad9d-d111-80b4-00c04fd430c8";
   test_uuid ~__POS__ 13
-    (Uuidm.of_mixed_endian_binary_string (Uuidm.to_binary_string Uuidm.ns_X500)
-     |> Test.get_some ~__POS__)
+    (Test.noraise ~__POS__ @@ fun () ->
+     Option.get @@
+     Uuidm.of_mixed_endian_binary_string
+       (Uuidm.to_binary_string Uuidm.ns_X500))
     "14B8a76b-ad9d-d111-80b4-00c04fd430c8";
   ()
 
-let main () =
-  Test.main @@ fun () ->
-  test_constructors ();
-  test_constants ();
-  test_mixed_endian ();
-  ()
-
+let main () = Test.main @@ fun () -> Test.autorun ()
 let () = if !Sys.interactive then () else exit (main ())
