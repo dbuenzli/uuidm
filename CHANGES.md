@@ -1,3 +1,7 @@
+
+
+- `uuidtrip` support for `cmdliner` 2.0.
+
 v0.9.9 2024-09-26 Zagreb
 ------------------------
 
