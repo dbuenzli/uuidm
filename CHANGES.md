@@ -1,6 +1,8 @@
+v0.9.10 2025-03-10 La Forclaz (VS)
+----------------------------------
 
 - Install forgotten `index.mld` file.
-- `uuidtrip` support for `cmdliner` 2.0.
+- `uuidtrip`: handle `cmdliner` deprecations.
 
 v0.9.9 2024-09-26 Zagreb
 ------------------------

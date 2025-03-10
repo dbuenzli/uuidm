@@ -39,3 +39,4 @@ build: [
   "%{cmdliner:installed}%"
 ]
 dev-repo: "git+https://erratique.ch/repos/uuidm.git"
+x-maintenance-intent: ["(latest)"]

@@ -4,7 +4,6 @@
 open Topkg
 
 let cmdliner = Conf.with_pkg "cmdliner"
-
 let () =
   Pkg.describe "uuidm" @@ fun c ->
   let cmdliner = Conf.value c cmdliner in
