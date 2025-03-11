@@ -15,12 +15,20 @@ See the {{!quick}quick start}.
 
 {2:random_based Random V4 UUIDs}
 
-The following [uuid] function generates V4 random UUIDs.
+The following [uuid] function generates V4 random UUIDs on OCaml 4:
 
 {[
 let uuid = Uuidm.v4_gen (Random.State.make_self_init ())
 let () = print_endline (Uuidm.to_string (uuid ()))
 let () = print_endline (Uuidm.to_string (uuid ()))
+]}
+
+However on OCaml 5 [Random.State.t] must not be shared between domains,
+otherwise there is a very slight chance you might end up generating duplicate UUIDs.
+Instead this should be used, be careful to always call [Random.split],
+ and don't use partial application:
+{[
+let uuid () = Uuidm.v4_gen (Random.split ()) ()
 ]}
 
 Make sure to read the {{!Uuidm.gen}warnings} about random generators.
